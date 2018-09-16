@@ -1,0 +1,207 @@
+.container {
+	width: 1200px;
+	height: 700px;
+	margin: 25px auto 25px auto;
+	padding: 50px 50px 50px 50px;
+	background-color: white;
+	box-shadow: 0 0 20px #ccc;
+}
+#footer {
+	border-top: 1px solid silver;
+	color: #888888;
+	font-size: 1.25rem;
+	text-align: center;
+	margin-top: 1rem;
+	padding: 0.5rem;
+}
+
+
+body {
+	background-color: #fff;
+	font-family: "adelle-1","adelle-2", constantia, cambria, Georgia, serif;
+	font-size:14px;
+	margin: 18px 0 0 30px;
+}
+
+h1 {
+	font-size: 24px;
+	margin: 0;
+	color: #5387bd;
+	font-weight: normal;
+}
+
+h2 {
+	font-weight: normal;
+	color: #808080;
+}
+
+p {
+	color: #808080;
+}
+
+svg {
+	background-color: white;
+}
+
+#intro {
+	width: 740px;
+	line-height: 150%;
+}
+
+#area1 {
+	display: inline-block;
+	float: right;
+}
+
+#area2 {
+	display: inline-block;
+	float: left;
+}
+
+/*#footer {
+	clear: both;
+	width: 760px;
+	line-height: 150%;
+	font-size: 12px;
+}*/
+
+path {
+	stroke: #888;
+	stroke-width: 2;
+	opacity: 0.2;
+	-moz-transition: all 0.1s;
+	-o-transition: all 0.1s;
+	-webkit-transition: all 0.1s;
+	transition: all 0.1s;
+	cursor: pointer;
+	fill: none;
+}
+
+g.linklight path{
+	stroke: #ff0000;
+	opacity: 1;
+}
+
+g.highlight path {
+	stroke: #cfa63e;
+	stroke-width: 4;
+	opacity: 1;
+}
+
+g.national path {
+	stroke: #5387bd;
+	stroke-width: 4;
+	opacity: 1;
+}
+
+
+.axis path,
+.axis line {
+	fill: none;
+	stroke: #BCBCBC;
+	stroke-width: 1;
+	shape-rendering: crispEdges;
+}
+
+.axis path {
+	opacity: 1;
+}
+
+.line:hover, .pathBase:hover {
+	stroke: black;
+	opacity: 1;
+}
+
+.pathBase {
+	stroke: #888;
+	opacity: 0.2;
+}
+
+.pathLight {
+	stroke: black;
+	opacity: 1;
+}
+
+#hoverlabel {
+	font-family: "ff-nuvo-sc-web-pro-1","ff-nuvo-sc-web-pro-2", sans-serif;
+	fill: #496d64;
+	font-size: 15px;
+	color: #808080;
+	text-anchor: start;
+}
+
+.axis text {
+	font-family: "ff-nuvo-sc-web-pro-1","ff-nuvo-sc-web-pro-2", sans-serif;
+	font-size: 14px;
+	letter-spacing: 0.5px;
+}
+
+.linelabel {
+	font-family: "ff-nuvo-sc-web-pro-1","ff-nuvo-sc-web-pro-2", sans-serif;
+	fill: #333;
+	font-size: 12px;
+	text-anchor: start;
+	opacity: 0.5;
+}
+
+.labelNation {
+	font-family: "ff-nuvo-sc-web-pro-1","ff-nuvo-sc-web-pro-2", sans-serif;
+	fill: #5387bd;
+	font-size: 12px;
+	text-anchor: start;
+}
+
+.labelDistrict {
+	font-family: "ff-nuvo-sc-web-pro-1","ff-nuvo-sc-web-pro-2", sans-serif;
+	fill: #cfa63e;
+	font-size: 12px;
+	text-anchor: start;
+}
+
+
+
+.path.active {
+	stroke: black;
+	opacity: 1;
+}
+
+/* Bar specific CSS */
+
+circle:hover {
+	fill: #2E2E31;
+}
+
+.barBase {
+	fill: #5288BE;
+}
+
+.barLight {
+	fill: #2E2E31;
+}
+
+.axisBar text {
+	font-family: "ff-nuvo-sc-web-pro-1","ff-nuvo-sc-web-pro-2", sans-serif;
+	font-size: 11px;
+}
+
+.axisBarTitle {
+	font-family: "ff-nuvo-sc-web-pro-1","ff-nuvo-sc-web-pro-2", sans-serif;
+	font-size: 12px;
+}
+
+.y.axisBar path,
+.y.axisBar line {
+	opacity: 0;
+	cursor: auto;
+}
+
+.x.axisBar path,
+.x.axisBar line {
+	opacity: 0.2;
+	cursor: auto;
+}
+
+.barlabel {
+	font-family: "ff-nuvo-sc-web-pro-1","ff-nuvo-sc-web-pro-2", sans-serif;
+	font-size:11px;
+}
