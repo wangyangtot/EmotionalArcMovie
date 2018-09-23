@@ -594,7 +594,6 @@
     }
 
     function point_click(artist_name,id) {
-        console.log(typeof (id));
         show_highlight(element_dict[artist_name]);
         //show_label(Array(element_dict[artist_name]), 'labels_search');
         create_show_sidebar(artist_name,id);
@@ -633,10 +632,10 @@
             dataType: 'json',
             success: function (data) {
                 $("#recommend_content").empty();
-                recommend_list = data.recMovie;
-                console.log(recommend_list);
-                for (j = 0; j < recommend_list.length; j++) {
-                    extract(recommend_list[j]);
+                recommend_title_list = data.recMovieTitle;
+                recommend_id_list=data.recMovieId;
+                for (j = 0; j < recommend_title_list.length; j++) {
+                    extract(recommend_title_list[j],recommend_id_list[j]);
 
                 }
 
@@ -737,8 +736,8 @@ function find_line_point(id){
     movieDataTpl = (movie,id) =>
     {
         actors = movie.Actors.split(',');
-        id=parseInt(id[0])
-        console.log(typeof (id))
+        id=parseInt(id)
+        console.log(id)
         //id=parseInt(movie.imdbID[4]);
         //id=7;
 
@@ -758,16 +757,16 @@ function find_line_point(id){
     </div>
 `
 };
-    recommendMovieDataTpl = (movie) =>
+    recommendMovieDataTpl = (movie,id) =>
     {return `<img src="${movie.Poster}" style="width: 140px;
-  height: 200px; margin-left:20px" onclick="window.location='/player/${movie.Id}/1/'"/>
+  height: 200px; margin-left:20px" onclick="window.location='/player/${movie.imdbID}/1/'"/>
 `
 };
 
 
 
 
-   function extract(title){
+   function extract(title,id){
         omdb_url = "http://www.omdbapi.com/?i=tt3896198&apikey=ecdad4ed&t=";
        //omdb_url = "http://www.omdbapi.com/?i=tt3896198&apikey=cda6674a&t=";
     $.ajax({
@@ -776,7 +775,7 @@ function find_line_point(id){
              dataType: 'json',
 
              success: function (data) {
-                 $('#recommend_content').append(recommendMovieDataTpl(data));
+                 $('#recommend_content').append(recommendMovieDataTpl(data,id));
              }
          })
      };
@@ -807,10 +806,10 @@ function find_line_point(id){
              data: {'movie': title},
              dataType: 'json',
              success: function (data) {
-                 recommend_list = data.recMovie;
-                 console.log(recommend_list);
-                 for (j = 1; j < recommend_list.length; j++) {
-                     extract(recommend_list[j]);
+                 recommend_title_list = data.recMovieTitle;
+                 recommend_id_list=data.recMovieId;
+                 for (j = 1; j < recommend_title_list.length; j++) {
+                     extract(recommend_title_list[j],recommend_id_list[j]);
                  }
              }
          });
