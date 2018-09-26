@@ -1,8 +1,8 @@
 # coding:utf-8
 from . import admin
 from flask import render_template, redirect, url_for, flash, session, request,abort
-from app.admin.forms import LoginForm, TagForm, MovieForm,PreviewForm,PwdForm,AuthForm,RoleForm,AdminForm
-from app.models import Admin, Tag, Movie,Preview,User,Comment,Moviecol,Auth,Role,Oplog, Adminlog, Userlog
+from app.admin.forms import LoginForm, MovieForm,PwdForm,AuthForm,RoleForm,AdminForm
+from app.models import Admin, Movie,User,Comment,Moviecol,Auth,Role,Oplog, Adminlog, Userlog
 from functools import wraps
 from app import db, app
 from werkzeug.utils import secure_filename
@@ -111,7 +111,7 @@ def pwd():
 
 
 
-@admin.route("/tag/add/", methods=['GET', 'POST'])
+''''@admin.route("/tag/add/", methods=['GET', 'POST'])
 @admin_login_req
  # @admin_auth
 def tag_add():
@@ -178,7 +178,7 @@ def tag_edit(id=None):
         flash("added tag", "ok")
         redirect(url_for("admin.tag_edit", id=id))
     return render_template("admin/tag_edit.html", form=form, tag=tag)
-
+'''
 
 @admin.route("/movie/add/", methods=['POST', 'GET'])
 @admin_login_req
@@ -199,16 +199,16 @@ def movie_add():
 
         movie = Movie(
             title=data['title'],
-            url=url,
-            info=data['info'],
-            logo=logo,
-            star=int(data['star']),
+            #url=url,
+            #info=data['info'],
+            #logo=logo,
+            #star=int(data['star']),
             playnum=0,
             commentnum=0,
-            tag_id=int(data['tag_id']),
-            area=data['area'],
+            #tag_id=int(data['tag_id']),
+            #area=data['area'],
             release_time=data['release_time'],
-            length=data['length'],
+            #length=data['length'],
         )
         db.session.add(movie)
         db.session.commit()
@@ -223,10 +223,9 @@ def movie_add():
 def movie_list(page=None):
     if page is None:
         page=1
-    page_data = Movie.query.join(Tag).filter(
-        Tag.id==Movie.tag_id).order_by(
+    page_data = Movie.query.order_by(
         Movie.addtime.desc()
-    ).paginate(page=page, per_page=4)
+    ).paginate(page=page, per_page=15)
     return render_template("admin/movie_list.html",page_data=page_data)
 
 

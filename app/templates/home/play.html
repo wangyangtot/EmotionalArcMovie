@@ -4,9 +4,9 @@
 {% block css %}
 <!--播放页面-->
 <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='jwplayer/skins/stormtrooper.css') }}">
-<script type="text/javascript" src="{{ url_for('static',filename='ueditor/ueditor.config.js') }}"></script>
+<!--<script type="text/javascript" src="{{ url_for('static',filename='ueditor/ueditor.config.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static',filename='ueditor/ueditor.all.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static',filename='ueditor/lang/zh-cn/zh-cn.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static',filename='ueditor/lang/zh-cn/zh-cn.js') }}"></script>-->
 <script>
     SyntaxHighlighter.all();
 
@@ -237,7 +237,7 @@
     $(document).ready(function () {
         $("#btn-col").click(function () {
             var mid = {{movie.id}};
-            var uid = {{ session['user_id']}};
+            var uid = {{session['user_id']}};
             $.ajax({
                 url: "{{ url_for('home.moviecol_add') }}",
                 type: "GET",

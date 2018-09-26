@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>微电影管理系统</title>
+    <title>SentimentMovie System</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="shortcut icon" href="{{url_for('static',filename='base/images/logo.png')}}">
     <link rel="stylesheet" href="{{url_for('static',filename='admin/bootstrap/css/bootstrap.min.css')}}">
@@ -27,12 +27,12 @@
 <div class="wrapper">
     <header class="main-header">
         <a href="{{ url_for('admin.index')}}" class="logo">
-            <span class="logo-mini"><img src="{{url_for('static',filename='base/images/logo.png')}}" style="height:40px;width:40px;">电影系统</span>
-            <span class="logo-lg"><img src="{{url_for('static',filename='base/images/logo.png')}}" style="height:40px;width:40px;">微电影管理系统</span>
+            <span class="logo-mini"><img src="{{url_for('static',filename='base/images/logo.png')}}" style="height:40px;width:40px;">Movie system</span>
+            <span class="logo-lg"><img src="{{url_for('static',filename='base/images/logo.png')}}" style="height:40px;width:40px;">Sentiment System</span>
         </a>
         <nav class="navbar navbar-static-top">
             <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
-                <span class="sr-only">下拉菜单</span>
+                <span class="sr-only">Scroll Down</span>
             </a>
             <div class="navbar-custom-menu">
                 <ul class="nav navbar-nav">
@@ -73,13 +73,13 @@
                          alt="User Image">
                 </div>
                 <div class="pull-left info">
-                    <p>用户{{session['admin']}}</p>
-                    <a href="#"><i class="fa fa-circle text-success"></i> 在线</a>
+                    <p>User{{session['admin']}}</p>
+                    <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
                 </div>
             </div>
             <form action="#" method="get" class="sidebar-form">
                 <div class="input-group">
-                    <input type="text" name="q" class="form-control" placeholder="搜索...">
+                    <input type="text" name="q" class="form-control" placeholder="Search...">
                     <span class="input-group-btn">
                         <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i
                                 class="fa fa-search"></i>

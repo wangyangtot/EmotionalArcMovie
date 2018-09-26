@@ -14,25 +14,6 @@
             </li>
         </ul>
     </li>
-    <li class="treeview" id="g-2">
-        <a href="#">
-            <i class="fa fa-tags" aria-hidden="true"></i>
-            <span>标签管理</span>
-            <span class="label label-primary pull-right">2</span>
-        </a>
-        <ul class="treeview-menu">
-            <li  id="g-2-1">
-                <a href="{{url_for('admin.tag_add')}}">
-                    <i class="fa fa-circle-o"></i> 添加标签
-                </a>
-            </li >
-            <li  id="g-2-2">
-                <a href="{{url_for('admin.tag_list',page=1)}}">
-                    <i class="fa fa-circle-o"></i> 标签列表
-                </a>
-            </li>
-        </ul>
-    </li>
     <li class="treeview"  id="g-3">
         <a href="#">
             <i class="fa fa-file-video-o" aria-hidden="true"></i>
@@ -48,25 +29,6 @@
             <li  id="g-3-2">
                 <a href="{{url_for('admin.movie_list',page=1)}}">
                     <i class="fa fa-circle-o"></i> 电影列表
-                </a>
-            </li>
-        </ul>
-    </li>
-    <li class="treeview"  id="g-4">
-        <a href="#">
-            <i class="fa fa-film" aria-hidden="true"></i>
-            <span>预告管理</span>
-            <span class="label label-primary pull-right">2</span>
-        </a>
-        <ul class="treeview-menu">
-            <li  id="g-4-1">
-                <a href="{{url_for('admin.preview_add')}}">
-                    <i class="fa fa-circle-o"></i> 添加预告
-                </a>
-            </li>
-            <li  id="g-4-2">
-                <a href="{{url_for('admin.preview_list',page=1)}}">
-                    <i class="fa fa-circle-o"></i> 预告列表
                 </a>
             </li>
         </ul>

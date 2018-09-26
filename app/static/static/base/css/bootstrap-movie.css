@@ -61,7 +61,9 @@ a{
 }
 .panel{
     border-radius:0px;
+
 }
+
 .glyphicon
 {
     margin-right:4px !important; /*override*/

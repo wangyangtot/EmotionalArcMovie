@@ -8,7 +8,6 @@ class User(db.Model):
     name = db.Column(db.String(100), unique=True)
     pwd = db.Column(db.String(100))
     email = db.Column(db.String(100), unique=True)
-    phone = db.Column(db.String(10), unique=True)
     info = db.Column(db.Text)  # 个性简介
     face = db.Column(db.String(255), unique=True)
     addtime = db.Column(db.DateTime, index=True, default=datetime.now)
@@ -18,7 +17,7 @@ class User(db.Model):
     moviecols = db.relationship("Moviecol", backref='user')
 
     def __repr__(self):
-        return "<User %r>" % self.name
+        return "<User %r>" % self.email
     def check_pwd(self,pwd):
         from werkzeug.security import check_password_hash
         return check_password_hash(self.pwd,pwd)
@@ -32,7 +31,7 @@ class Userlog(db.Model):
     ip = db.Column(db.String(100))
     addtime = db.Column(db.DateTime, index=True, default=datetime.now)
 
-
+'''
 class Tag(db.Model):
     __tablename__ = "tag"
     id = db.Column(db.Integer, primary_key=True)
@@ -42,31 +41,31 @@ class Tag(db.Model):
 
     def __repr__(self):
         return "<tag %r>" % self.name
-
+'''
 
 class Movie(db.Model):
     __tablename__ = "movie"
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(255), unique=True)
-    url = db.Column(db.String(255), unique=True)
-    info = db.Column(db.Text)
-    logo = db.Column(db.String(255), unique=True)
-    star = db.Column(db.SmallInteger)
+    title = db.Column(db.String(255))
+    title_without_year=db.Column(db.String(255))
+    youtubeId=db.Column(db.String(255))
     playnum = db.Column(db.BigInteger)
     commentnum = db.Column(db.BigInteger)
-    tag_id = db.Column(db.Integer, db.ForeignKey('tag.id'))
-    area = db.Column(db.String(255))
-    release_time = db.Column(db.Date)
-    length = db.Column(db.String(100))
     addtime = db.Column(db.DateTime, index=True, default=datetime.now)
     comments = db.relationship("Comment", backref='movie')
     Moviecols = db.relationship("Moviecol", backref='movie')
 
     def __repr__(self):
         return "<Movie %r>" % self.title
+    #url = db.Column(db.String(255), unique=True)
+    #area = db.Column(db.String(255))
+    #release_time = db.Column(db.Date)
+    #length = db.Column(db.String(100))
+    # info = db.Column(db.Text)
+    # logo = db.Column(db.String(255), unique=True)
+    # star = db.Column(db.SmallInteger)
 
-
-class Preview(db.Model):
+'''class Preview(db.Model):
     __tablename__ = "preview"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(255), unique=True)
@@ -75,7 +74,7 @@ class Preview(db.Model):
 
     def __repr__(self):
         return "<preview %r>" % self.title
-
+'''
 class Comment(db.Model):
     __tablename__ = "comment"
     id = db.Column(db.Integer, primary_key=True)

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1,maximum-scale=1"/>
-    <title>MoodMovie</title>
+    <title>SentimentMovie</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='mood/mood.css')}}">
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
@@ -16,9 +16,7 @@
 
 </head>
 
-<body>
-
-
+<body style="background-color: white !important;" >
 <!-- ARTIST SIDEBAR (RIGHT SIDE) -->
 <div class="ui thin sidebar right inverted vertical menu" id="artist_sidebar"  style="width:400px;height: 800px !important;">
     <div class="item">
@@ -35,7 +33,7 @@
        <div class="ui range" id="emotion_range"></div>
      </div>
     <div class="borderless item">
-        <p class="recommend_movie_header">recoomend movies</p>
+        <p class="recommend_movie_header">recommend movies</p>
         <div class="content" id="recommend_content"></div>
 
     </div>
@@ -56,7 +54,7 @@
 <!-- END TIMELINE SIDEBAR -->
 
 
-<div class="ui container pusher" id="main_container">
+<div class="ui container pusher" id="main_container" style="background-color: white !important;">
     <div class="ui dimmer" id="main_container_loader">
         <div class="ui text loader">Loading</div>
     </div>
@@ -65,7 +63,7 @@
         <!-- SEARCH BAR -->
         <div class="ui search" id="artist_search">
             <div class="ui mini icon inverted input">
-                <input class="prompt" type="text" placeholder="Search artist...">
+                <input class="prompt" type="text" placeholder="Search movie...">
                 <i class="search icon"></i>
             </div>
             <div class="results"></div>
@@ -73,14 +71,18 @@
 
         <!-- LABELS -->
         <div class="ui container" id="labels_container">
-            <a class="ui mini label popup_info green_back" onclick="switch_color(this);"
+            <a class="ui mini label popup_info green_back" style="background-color:#ef8a62"onclick="switch_color(this);"
                data-html="<b>Sublimity</b> includes this feelings:<br><i>Peacefulness<br>Nostalgic<br>Transcendence<br>Wonder<br>Tenderness</i>">group0</a>
-            <a class="ui mini label popup_info red_back" onclick="switch_color(this);" data-html="<b>Unease</b> includes this feelings:
+            <a class="ui mini label popup_info red_back"style="background-color:#fddbc7" onclick="switch_color(this);" data-html="<b>Unease</b> includes this feelings:
         <br><i>Repulsive<br>Lethargy<br>Sadness<br>Fear<br>Tension</i>">group1</a>
-            <a class="ui mini label popup_info white_back" onclick="switch_color(this);"
+            <a class="ui mini label popup_info white_back" style="background-color:#ffffff"onclick="switch_color(this);"
                data-html="<b>Style</b> includes this feelings:<br><i>Fancy<br>Cerebral<br>Mechanical<br></i>">group2</a>
-            <a class="ui mini label popup_info blue_back" onclick="switch_color(this);"
+            <a class="ui mini label popup_info blue_back" style="background-color:#e0e0e0"onclick="switch_color(this);"
                data-html="<b>Vitality</b> includes this feelings:<br><i>Joyful activation<br>Power</i>">group3</a>
+            <a class="ui mini label popup_info grey_back"style="background-color:#999999" onclick="switch_color(this);"
+               data-html="<b>Vitality</b> includes this feelings:<br><i>Joyful activation<br>Power</i>">group4</a>
+            <a class="ui mini label popup_info" style="background-color:#b2182b"  onclick="switch_color(this);"
+               data-html="<b>Vitality</b> includes this feelings:<br><i>Joyful activation<br>Power</i>">group5</a>
         </div>
 
     </div>
@@ -144,9 +146,6 @@
 <script src="static/js/fisheye.js"></script>
 <script src="/static/js/avatar.js"></script>-->
 <script src="{{url_for('static',filename='mood/data_receiver.js')}}"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-
 <script src="{{url_for('static',filename='mood/helper.js')}}"></script>
 
 <!--<script src="static/js/stream_chart.js"></script>-->
@@ -214,7 +213,7 @@
         d3.max(data1, function (d) {
             return +d.x;
         })
-    ]).range([50, width - 50]);
+    ]).range([100, width - 200]);
 
     var y = d3.scale.linear().domain([
         d3.min(data1, function (d) {
@@ -223,7 +222,7 @@
         d3.max(data1, function (d) {
             return +d.y;
         })
-    ]).range([height - 50, 50]);
+    ]).range([height - 50, 100]);
 
 
     // creating svg elements (container, groups, circles)
@@ -403,7 +402,7 @@
     var svg = container
         .append("svg")
         .attr("width", "100%")
-        .style('background-color', '#333333')
+        .style('background-color', '#4d4d4d')
         .attr("height", "100%")
         .attr('id', 'main_svg')
         .call(zoom);
@@ -443,12 +442,12 @@
             return d.id
         })
         .attr('fill', function (d) {
-            return 'rgba(' + d.color + ')'
+            return d.color
         })
-        .attr('r', 3)
+        .attr('r', 4)
         .attr('transform', transform)
-        /*.on('mouseover', function (d) {
-            //console.log(d);
+        .on('mouseover', function (d) {
+            console.log(d);
             return show_sentiment_line(Array(d),'path_rect')
 
             //return show_label(Array(d), 'labels')
@@ -457,7 +456,7 @@
         .on('mouseout', function (d) {
             return hide_sentiment_line('path_rect')
             //return hide_label('labels')
-        });*/
+        });
 
     var highlights = svg
         .append('g')
@@ -470,25 +469,23 @@
         .style('opacity', '0.9');
 
 
-    var slider_grid = $('#slider_grid');
-    slider_grid.css('margin-bottom', parseInt(slider_grid.css('margin-bottom')) + 35 + 'px');
-
      $('.ui.search')
       .search({
         source : title_dict,
         searchFields   : ['title'],
         searchFullText: false,
         onSelect: function(result, response){
-          hide_label('labels_search');
+          //hide_label('labels_search');
           // setTimeout(function() { hide_label('labels_search') }, 20000);
 
           // checks whether the searched artist circle is 'viewable', if not, centers the view
-          var auxtitle = result.title.replace(/ /g, '-');
+          var auxtitle = result.id;
+          console.log(auxtitle);
           var circle = document.getElementById(auxtitle);
           if (!checkVisible(circle)){
             interpolateZoom([0, 0], 1);
           }
-          point_click(result.title);
+          point_click(result.title,result.id);
         },
       });
 
@@ -573,8 +570,8 @@
             .attr('id', '#circle_highlight')
             .attr('class', 'zoomable')
             .attr('transform', transform)
-            .attr('r', 5)
-            .attr('fill', '#fff')
+            .attr('r', 8)
+            .attr('fill', 'blue')
             .attr('pointer-events', 'none')
             .style('opacity', '0.8');
         repeat();
@@ -585,7 +582,7 @@
                 .attr('r', 5)
                 .transition()
                 .duration(600)
-                .attr('r', 5)
+                .attr('r', 8)
                 .ease('sine')
                 .each('end', repeat);
         }
@@ -594,6 +591,7 @@
     }
 
     function point_click(artist_name,id) {
+        console.log("ot woring")
         show_highlight(element_dict[artist_name]);
         //show_label(Array(element_dict[artist_name]), 'labels_search');
         create_show_sidebar(artist_name,id);
@@ -610,7 +608,7 @@
         //$('#sidebar_lastfm').attr('href', 'http://www.last.fm/music/' + artist_name.replace(/ /g, '+'));
         //$('#sidebar_lastfm').attr('target', '_blank');
         //$('#sidebar_lastfm').text(artist_name);
-        get_recommend_sidebar(artist_name,id);
+        get_recommend_sidebar(artist_name, id);
         $('#emotion_range').range({
             min: 0,
             max: 0.5,
@@ -618,12 +616,11 @@
             step:0.05,
             onChange: function (val) {
                 RangeValue = val;
-                console.log(RangeValue);
+                //console.log(RangeValue);
                 change_recommend_movie(RangeValue,artist_name)
             }
         });
     }
-
     function change_recommend_movie(RangeValue,movie_name) {
         $.ajax({
             type: 'GET',
@@ -644,10 +641,10 @@
     }
 
 
-    function find_id(id_name){
+    function find_id(id){
         for(i=0;i<line_data.length;i++)
         {
-            if(line_data[i].id==id_name){
+            if(line_data[i].id==id){
                 return line_data[i]
             }
         }
@@ -717,6 +714,7 @@ function find_line_point(id){
 
         group
             .append("path")
+            .attr('class', 'zoomable')
             .attr("d", lineFunction(choose_path_point.line_points))
             .attr("stroke", "blue")
             .attr("stroke-width", 2)
@@ -737,10 +735,6 @@ function find_line_point(id){
     {
         actors = movie.Actors.split(',');
         id=parseInt(id)
-        console.log(id)
-        //id=parseInt(movie.imdbID[4]);
-        //id=7;
-
          return `
     <div class="movie__poster" style="
     width: 100%;
@@ -758,8 +752,10 @@ function find_line_point(id){
 `
 };
     recommendMovieDataTpl = (movie,id) =>
-    {return `<img src="${movie.Poster}" style="width: 140px;
-  height: 200px; margin-left:20px" onclick="window.location='/player/${movie.imdbID}/1/'"/>
+    {return `<div  class="movie__poster--featured" style="width:140px;height: 200px;float:left">
+<img src="${movie.Poster}" style="width: 140px;
+  height: 200px; margin-left:20px" onclick="window.location='/player/${id}/1/'"/>
+  </div>
 `
 };
 
@@ -781,11 +777,9 @@ function find_line_point(id){
      };
 
      function get_recommend_sidebar(title,id) {
-         console.log(title)
+         //console.log(title)
          const defaultTitle = 'dead+poets+society';
          omdb_url = "http://www.omdbapi.com/?i=tt3896198&apikey=ecdad4ed&t="
-         //omdb_url = "http://www.omdbapi.com/?i=tt3896198&apikey=cda6674a&t=";
-         var recommend_list;
          $.ajax({
              type: 'GET',
              url: omdb_url + title.replace(/ /gi, '+'),
@@ -794,13 +788,10 @@ function find_line_point(id){
                  $('#sidebar_header_text').text(title);
                  $('#sidebar_spotify_content').html(movieDataTpl(data,id));
                  $("#recommend_content").empty();
-
-
-                 //console.log(movieData)
              }
          })
 
-         $.ajax({
+         /*$.ajax({
              type: 'GET',
              url: '/recommend',
              data: {'movie': title},
@@ -808,11 +799,14 @@ function find_line_point(id){
              success: function (data) {
                  recommend_title_list = data.recMovieTitle;
                  recommend_id_list=data.recMovieId;
-                 for (j = 1; j < recommend_title_list.length; j++) {
+                 console.log(recommend_title_list);
+                 for (j = 0; j < recommend_title_list.length; j++) {
+                     console.log(recommend_title_list[j]);
+                     console.log (recommend_id_list[j]);
                      extract(recommend_title_list[j],recommend_id_list[j]);
                  }
              }
-         });
+         });*/
      }
 </script>
 

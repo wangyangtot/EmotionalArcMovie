@@ -1,8 +1,8 @@
 # coding:utf8
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, FileField, TextAreaField, SelectField, SelectMultipleField
+from wtforms import StringField, PasswordField, IntegerField,SubmitField, FileField, TextAreaField, SelectField, SelectMultipleField
 from wtforms.validators import DataRequired, ValidationError,EqualTo
-from app.models import Admin, Tag,Auth,Role
+from app.models import Admin,Auth,Role
 
 
 
@@ -46,29 +46,18 @@ class LoginForm(FlaskForm):
         if admin == 0:
             raise ValidationError(" account not exist")
 
-
-class TagForm(FlaskForm):
-    name = StringField(
-        label="name",
+class MovieForm(FlaskForm):
+    id = IntegerField(
+        label="movieId",
         validators=[
-            DataRequired("please input label")
+            DataRequired("please input movie id")
         ],
-        description="label",
+        description="movie_id",
         render_kw={
             "class": "form-control",
-            "id": "input_name",
-            "placeholder": "请输入标签名称！",
+            "id": "input_id",
+            "placeholder": "movie id*",
         })
-
-    submit = SubmitField(
-        "edit",
-        render_kw={
-            "class": "btn btn-primary"
-        }
-    )
-
-
-class MovieForm(FlaskForm):
     title = StringField(
         label="moviename",
         validators=[
@@ -78,101 +67,52 @@ class MovieForm(FlaskForm):
         render_kw={
             "class": "form-control",
             "id": "input_name",
-            "placeholder": "请输入片名！",
+            "placeholder": "movie name！",
         })
-    url = FileField(
-        label='file',
+    title_without_year = StringField(
+        label="moviename without year",
         validators=[
-            DataRequired("please upload file")
-        ],
-        description="file name",
-
-    )
-    info = TextAreaField(
-        label="简介",
-        validators=[
-            DataRequired("please input jianjie")
+            DataRequired("please input title_without_year")
         ],
         description="movie_name",
         render_kw={
             "class": "form-control",
-            "rows": 10,
-        }
-    )
-    logo = FileField(
-        label="封面",
-        validators=[
-            DataRequired("please input 封面")
-        ],
-        description="cover",
-    )
-    star = SelectField(
-        label="star level",
-        validators=[
-            DataRequired("please select star")
-        ],
-        coerce=int,
-        choices=[(1, "1 star"), (2, "2 star"), (3, "3 star"), (4, "4 star"), (4, "4 star")],
-        description="star",
-        render_kw={
-            "class": "form-control",
-        }
-    )
-    tag_id = SelectField(
-        label="tag",
-        validators=[
-            DataRequired("please select tag")
-        ],
-        coerce=int,
-        choices=[(v.id,v.name) for v in Tag.query.all()],
-        description="tag",
-        render_kw={
-            "class": "form-control",
-        }
-    )
-    area = StringField(
-        label="place",
-        validators=[
-            DataRequired(" please input the place")],
-        description="place",
-        render_kw={
-
-            "class": "form-control",
-            "placeholder": "请输入diqu！",
-        }
-
-    )
-    length = StringField(
-        label="movie length",
-        validators=[
-            DataRequired(" please input the length")],
-        description="movie length",
-        render_kw={
-
-            "class": "form-control",
-            "placeholder": "请输入movie length！",
-        }
-
-    )
-    release_time = StringField(
-        label="release time",
-        validators=[
-            DataRequired(" please select the release time")],
-        description="time of release",
-        render_kw={
-
-            "class": "form-control",
-            "placeholder": "请select movie release time！",
-            "id": "input_release_time"
-        }
-    )
+            "id": "input_name",
+            "placeholder": "title_without_year *！",
+        })
     submit = SubmitField(
         "edit",
         render_kw={
             "class": "btn btn-primary"
         }
     )
+    youtubeId = StringField(
+        label="youtubeID",
+        validators=[
+            DataRequired(" please provide the youtube Id")],
+        description="place",
+        render_kw={
 
+            "class": "form-control",
+            "placeholder": "please provide the youtube Id！",
+        }
+
+    )
+    add_time = StringField(
+        label="add time",
+        validators=[
+            DataRequired(" please select the Add time")],
+        description="time of release",
+        render_kw={
+
+            "class": "form-control",
+            "placeholder": "select movie Add time！",
+            "id": "input_add_time"
+        }
+    )
+
+
+'''
 class PreviewForm(FlaskForm):
     title = StringField(
         label="预告标题",
@@ -198,6 +138,7 @@ class PreviewForm(FlaskForm):
             "class": "btn btn-primary",
         }
     )
+    '''
 class PwdForm(FlaskForm):
     old_pwd=PasswordField(
         label="old 密码",

@@ -3,12 +3,12 @@
 
 {% block content %}
 <!--内容-->
-<div class="container" style="margin-top:76px">
+<div class="container" style="margin-top:76px;background-color: #4d4d4d !important;">
     {% include "home/menu.html" %}
     <div class="col-md-9">
-        <div class="panel panel-warning">
-            <div class="panel-heading">
-                <h3 class="panel-title"><span class="glyphicon glyphicon-map-marker"></span>&nbsp;会员中心</h3>
+        <div class="panel panel-default" style="background-color: #4d4d4d !important;">
+            <div class="panel-heading" style="background-color: #4d4d4d !important;">
+                <h3 style="color:white" class="panel-title"><span style="color:white"class="glyphicon glyphicon-map-marker"></span>&nbsp;Manage Profiles</h3>
             </div>
             <div class="panel-body">
 
@@ -24,22 +24,8 @@
                 <form role="form" method="post" enctype="multipart/form-data">
                     <fieldset>
                         <div class="form-group">
-                            <label for="input_name">
-                            <span
-                                    class="glyphicon glyphicon-user"></span>&nbsp;
-                                {{form.name.label}}
-                            </label>
-                            {{form.name}}
-                            {% for err in form.name.errors %}
-                            <div class="col-md-12">
-                                <p style="color: red">{{ err }}</p>
-                            </div>
-                            {% endfor %}
-                        </div>
-                        <div class="col-md-12" id="error_name"></div>
-                        <div class="form-group">
-                            <label for="input_email">
-                                <span class="glyphicon glyphicon-envelope"></span>&nbsp;
+                            <label style="color:white" for="input_email">
+                                <span style="color:white" class="glyphicon glyphicon-envelope"></span>&nbsp;
                                 {{form.email.label}}
                             </label>
                             {{form.email}}
@@ -51,21 +37,8 @@
                         </div>
                         <div class="col-md-12" id="error_email"></div>
                         <div class="form-group">
-                            <label for="input_phone">
-                                <span class="glyphicon glyphicon-phone"></span>&nbsp;
-                                {{form.phone.label}}
-                            </label>
-                            {{form.phone}}
-                            {% for err in form.phone.errors %}
-                            <div class="col-md-12">
-                                <p style="color: red">{{ err }}</p>
-                            </div>
-                            {% endfor %}
-                        </div>
-                        <div class="col-md-12" id="error_phone"></div>
-                        <div class="form-group">
-                            <label for="input_face">
-                                <span class="glyphicon glyphicon-picture"></span>&nbsp;
+                            <label style="color:white" for="input_face">
+                                <span  style="color:white"class="glyphicon glyphicon-picture"></span>&nbsp;
                                 {{form.face.label}}</label>
 
                             {% if user.face %}
@@ -83,8 +56,8 @@
                         </div>
                         <div class="col-md-12" id="error_face"></div>
                         <div class="form-group">
-                            <label for="input_info">
-                                <span class="glyphicon glyphicon-edit"></span>&nbsp;
+                            <label style="color:white" for="input_info">
+                                <span  style="color:white"class="glyphicon glyphicon-edit"></span>&nbsp;
                                 {{form.info.label}}
                             </label>
                             {{form.info}}
@@ -94,7 +67,7 @@
                             </div>
                             {% endfor %}
                         </div>
-                        <div class="col-md-12" id="error_info"></div>
+                        <div style="color:white" class="col-md-12" id="error_info"></div>
                         {{form.csrf_token}}
                         {{form.submit}}
                     </fieldset>

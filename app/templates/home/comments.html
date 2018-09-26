@@ -3,10 +3,10 @@
 
 {% block content %}
 {% include "home/menu.html"%}
-<div class="col-md-9">
-    <div class="panel panel-warning">
+<div class="col-md-9"  >
+    <div class="panel panel-default">
         <div class="panel-heading">
-            <h3 class="panel-title"><span class="glyphicon glyphicon-map-marker"></span>&nbsp;评论记录</h3>
+            <h3 class="panel-title" style="color:white"><span class="glyphicon glyphicon-map-marker" style="color:white"></span>&nbsp;Reviews</h3>
         </div>
         <div class="panel-body">
             <ul class="commentList">
@@ -29,7 +29,7 @@
                         <header class="comment-header">
                             <div class="comment-meta">
                                 <a class="comment-author" href="user.html">{{ v.user.name }}</a>
-                                评论于
+                                 At
                                 <time title="{{ v.addtime }}" datetime="{{ v.addtime }}">
                                     {{ v.addtime }}
                                 </time>

@@ -3,9 +3,11 @@
     height: 99.5%;
     margin: 0px!important;
 }
-
+#labels_container #last lable{
+background-color:blueviolet;
+}
 html, body {
-    background-color: #333333;
+    background-color: black;
 }
 
 .zoom {
@@ -78,6 +80,12 @@ html.ios body {
 
 #artist_sidebar #mood_accordion {
   margin-bottom: 5px;
+}
+
+#artist_sidebar #emotion_influence p{
+   color: white;
+   padding-top: 3px;
+  text-align: center;
 }
 
 #artist_sidebar #mood_accordion .title {
