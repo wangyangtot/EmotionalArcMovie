@@ -145,6 +145,7 @@
 
 <script src="static/js/fisheye.js"></script>
 <script src="/static/js/avatar.js"></script>-->
+<script src="{{url_for('static',filename='mood/smallest_circle_enclosing.js')}}"></script>
 <script src="{{url_for('static',filename='mood/data_receiver.js')}}"></script>
 <script src="{{url_for('static',filename='mood/helper.js')}}"></script>
 
@@ -447,7 +448,7 @@
         .attr('r', 4)
         .attr('transform', transform)
         .on('mouseover', function (d) {
-            console.log(d);
+            //console.log(d);
             return show_sentiment_line(Array(d),'path_rect')
 
             //return show_label(Array(d), 'labels')
@@ -462,6 +463,10 @@
         .append('g')
         .attr('id', 'circles_highlight')
         .style('opacity', '0.9');
+    var enclosing_circles = svg
+        .append('g')
+        .attr('id', 'enclosing_circle')
+        .style('opacity', '0.5');
 
     var locks = svg
         .append('g')
@@ -480,7 +485,6 @@
 
           // checks whether the searched artist circle is 'viewable', if not, centers the view
           var auxtitle = result.id;
-          console.log(auxtitle);
           var circle = document.getElementById(auxtitle);
           if (!checkVisible(circle)){
             interpolateZoom([0, 0], 1);
@@ -591,7 +595,6 @@
     }
 
     function point_click(artist_name,id) {
-        console.log("ot woring")
         show_highlight(element_dict[artist_name]);
         //show_label(Array(element_dict[artist_name]), 'labels_search');
         create_show_sidebar(artist_name,id);
@@ -611,9 +614,9 @@
         get_recommend_sidebar(artist_name, id);
         $('#emotion_range').range({
             min: 0,
-            max: 0.5,
+            max: 0.3,
             start: 0.05,
-            step:0.05,
+            step:0.01,
             onChange: function (val) {
                 RangeValue = val;
                 //console.log(RangeValue);
@@ -621,7 +624,8 @@
             }
         });
     }
-    function change_recommend_movie(RangeValue,movie_name) {
+
+    function change_recommend_movie(RangeValue, movie_name) {
         $.ajax({
             type: 'GET',
             url: '/change_recommend_movie',
@@ -630,13 +634,36 @@
             success: function (data) {
                 $("#recommend_content").empty();
                 recommend_title_list = data.recMovieTitle;
-                recommend_id_list=data.recMovieId;
+                recommend_id_list = data.recMovieId;
                 for (j = 0; j < recommend_title_list.length; j++) {
-                    extract(recommend_title_list[j],recommend_id_list[j]);
-
+                    extract(recommend_title_list[j], recommend_id_list[j]);
+                }
+                /*enclosing_points = []
+                for (j = 0; j < recommend_title_list.length; j++) {
+                    for (i = 0; i < data1.length; i++) {
+                        if (data1[i].id == recommend_id_list[j]) {
+                            enclosing_points.push({x:data1[i].x, y:data1[i].y});
+                        }
+                    }
                 }
 
+                var new_enclosing_circle = makeCircle(enclosing_points);
+                var enclosing = svg.select('#enclosing_circle');
+                enclosing.selectAll('*').remove();
+                var group_tem = enclosing.selectAll('*').data(Array(new_enclosing_circle)).enter();
+                var enclose = group_tem.insert('circle', ':first-child')
+                    .attr('class', 'zoomable')
+                    .attr('id', '#enclosing_circle')
+                    .attr("r", new_enclosing_circle.r)
+                    .attr('x', enclosing_points.x)
+                    .attr('y', enclosing_points.y)
+
+                    .style("fill", 'blue')
+
+*/
+
             }
+
         });
     }
 
