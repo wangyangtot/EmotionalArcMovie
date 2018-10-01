@@ -1,0 +1,350 @@
+{% extends "home/home.html" %}
+{% import "ui/comment_page.html" as pg %}
+
+{% block css %}
+<!--播放页面-->
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='jwplayer/skins/stormtrooper.css') }}">
+<script type="text/javascript" src="{{ url_for('static',filename='ueditor/ueditor.config.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static',filename='ueditor/ueditor.all.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static',filename='ueditor/lang/zh-cn/zh-cn.js') }}"></script>
+
+
+</head>
+<!--播放页面-->
+<style>
+    .col-lg-1, .col-lg-10, .col-lg-11, .col-lg-12, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-md-1, .col-md-10, .col-md-11, .col-md-12, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-sm-1, .col-sm-10, .col-sm-11, .col-sm-12, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-xs-1, .col-xs-10, .col-xs-11, .col-xs-12, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9 {
+        padding-right: 3px;
+        padding-left: 3px;
+    }
+
+</style>
+{% endblock %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div id="player"></div>
+    </div>
+    <div class="col-md-4" style="width:420px;height:440px;margin-top:0px;margin-left:-20px;" >
+        <div class="panel panel-default" style="background-color:#4d4d4d !important;">
+            <div class="panel-heading" style="background-color:#4d4d4d !important;">
+                <h3 id="movie_name" class="panel-title" style="color:white;font-weight:bold;font-style:italic;" ><span class="glyphicon glyphicon-facetime-video"></span></h3>
+            </div>
+            <div class="panel-body" style="height:450px;overflow:scroll;">
+                <table class="table">
+                    <tr>
+                        <td style="color:white;font-weight:bold;font-style:italic;width:30%">
+                            <span class="glyphicon glyphicon-film"></span>&nbsp;Director
+                        </td>
+                        <td id="movie_Director" style="color:#ccc;font-weight:bold;font-style:italic;"></td>
+                    </tr>
+                    <tr>
+                        <td style="color:white;font-weight:bold;font-style:italic;">
+                            <span class="glyphicon glyphicon-book"></span>&nbsp;Writer
+                        </td>
+                        <td style="color:#ccc;font-weight:bold;font-style:italic;" id="movie_Writer"></td>
+                    </tr>
+                    <tr>
+                        <td style="color:white;font-weight:bold;font-style:italic;">
+                            <span class="glyphicon glyphicon-star"></span>&nbsp;Actors
+                        </td>
+                        <td id="movie_Actors" style="color:#ccc;font-weight:bold;font-style:italic;"></td>
+                    </tr>
+                    <tr>
+                        <td style="color:white;font-weight:bold;font-style:italic;">
+                            <span class="glyphicon glyphicon-th-list"></span>&nbsp;Genre
+                        </td>
+                        <td id="movie_Genre" style="color:#ccc;font-weight:bold;font-style:italic;"></td>
+                    </tr>
+                    <tr>
+                        <td style="color:white;font-weight:bold;font-style:italic;">
+                            <span class="glyphicon glyphicon-pencil"></span>&nbsp;Rated
+                        </td>
+                        <td style="color:#ccc;font-weight:bold;font-style:italic;" id="movie_Rated"></td>
+                    </tr>
+                    <tr>
+                        <td style="color:white;font-weight:bold;font-style:italic;">
+                            <span class="glyphicon glyphicon-play"></span>&nbsp;Plays
+                        </td>
+                        <td style="color:#ccc;font-weight:bold;font-style:italic;">{{movie.playnum}}</td>
+                    </tr>
+                    <tr>
+                        <td style="color:white;font-weight:bold;font-style:italic;">
+                            <span class="glyphicon glyphicon-comment"></span>&nbsp;Review
+                        </td>
+                        <td style="color:#ccc;font-weight:bold;font-style:italic;">{{movie.commentnum}}</td>
+                    </tr>
+                    <tr>
+                        <td style="color:white;font-weight:bold;font-style:italic;">
+                            <span class="glyphicon glyphicon-picture"></span>&nbsp;Plot
+                        </td>
+                        <td style="color:#ccc;font-weight:bold;font-style:italic;" id="movie_plot">
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12" style="margin-top:6px;">
+        <div class="panel panel-default">
+            <div class="panel-heading" style="background-color:#4d4d4d !important;">
+                <h3 class="panel-title" style="color:white;font-weight:bold;font-style:italic;"><span class="glyphicon glyphicon-comment"></span>&nbsp;recommend movies for you
+                </h3>
+            </div>
+            <div class="panel-body" style="background-color:#4d4d4d !important;margin-left:-30px;height:300px ">
+                <span style="width:100px;margin-left:200px;margin-top:10px;color:#ccc;">Weak</span>
+                <span style="width:100px;margin-left:500px;margin-top:10px;color:#ccc;">Strong</span>
+
+                <div class="ui inverted grey range" id="recommend_slider" style="width:400px;margin-left:300px;margin-top:-20px;"></div>
+                <div class="panel-movie" id="recommend_movies" style="float:left;margin-top:20px;"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12" style="margin-top:6px;">
+        <div class="panel panel-default"  tyle="background-color:#4d4d4d !important;">
+            <div class="panel-heading" style="background-color:#4d4d4d !important;" >
+                <h3 class="panel-title" style="color:white;font-weight:bold;font-style:italic;"><span class="glyphicon glyphicon-comment"></span>&nbsp;Reviews</h3>
+            </div>
+            <div class="panel-body">
+                {% if "user" not in session %}
+                <div class="alert alert-default alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span aria-hidden="true">×</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <strong>Please <a href="{{ url_for('home.login') }}" target="_blank"
+                                 class="text-info">Log In</a> To Write A Review！</strong>
+                </div>
+                {% endif %}
+                <ol class="breadcrumb" style="margin-top:6px;">
+                    <li>All Comments({{ movie.commentnum }})</li>
+                </ol>
+                {% if "user" in session %}
+                {% for msg in get_flashed_messages(category_filter=["err"]) %}
+                <p style="color:red;">{{ msg }}</p>
+                {% endfor %}
+                {% for msg in get_flashed_messages(category_filter=["ok"]) %}
+                <p style="color:green;">{{ msg }}</p>
+                {% endfor %}
+                <form role="form" style="margin-bottom:6px;" method="post">
+                    <div class="form-group">
+                        <div>
+                            <label for="input_content">{{ form.content.label }}</label>
+                            {{ form.content }}
+                        </div>
+                        {% for err in form.content.errors %}
+                        <div class="col-md-12">
+                            <p style="color:red">{{ err }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {{ form.csrf_token }}
+                    {{ form.submit }}
+                    <a class="btn btn-danger" id="btn-col"><span class="glyphicon glyphicon-heart"></span>&nbsp;收藏电影</a>
+                </form>
+                <div class="col-md-12">
+                    <p style="color:green" id="show_col_msg"></p>
+                </div>
+                <div class="clearfix"></div>
+                {% endif %}
+                <ul class="commentList">
+                    {% for v in page_data.items %}
+                    <li class="item cl">
+                        <a>
+                            <i class="avatar size-L radius">
+                                {% if v.user.face %}
+                                <img alt="50x50"
+                                     src="{{ url_for('static',filename='uploads/users/'+v.user.face) }}"
+                                     class="img-circle"
+                                     style="border:1px solid #abcdef;width:50px;">
+                                {% else %}
+                                <img alt="50x50" data-src="holder.js/50x50" class="img-circle"
+                                     style="border:1px solid #abcdef;width:50px;">
+                                {% endif %}
+                            </i>
+                        </a>
+                        <div class="comment-main">
+                            <header class="comment-header">
+                                <div class="comment-meta">
+                                    <a class="comment-author" href="user.html">{{ v.user.name }}</a>
+                                    At
+                                    <time title="{{ v.addtime }}" datetime="{{ v.addtime }}">
+                                        {{ v.addtime }}
+                                    </time>
+                                </div>
+                            </header>
+                            <div class="comment-body">
+                                <p>{{ v.content | safe }}</p>
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <div class="col-md-12 text-center">
+                    {{ pg.page(page_data,'home.player',movie.id) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('#recommend_slider').range({
+        min: 0,
+        max: 0.5,
+        start: 0.05,
+        step:0.05,
+        onChange: function (val) {
+            RangeValue = val;
+            console.log(RangeValue);
+            change_recommend_movie(RangeValue, '{{movie.title_without_year}}')
+        }
+            });
+function change_recommend_movie(RangeValue,movie_name) {
+        $.ajax({
+            type: 'GET',
+            url: '/change_recommend_movie',
+            data: {"range_value":RangeValue , "title": movie_name},
+            dataType: 'json',
+            success: function (data) {
+                $("#recommend_movies").empty();
+                recommend_title_list = data.recMovieTitle;
+                recommend_id_list=data.recMovieId;
+                for (j = 0; j < recommend_title_list.length; j++) {
+                    console.log(recommend_title_list[j]);
+                    extract(recommend_title_list[j],recommend_id_list[j]);
+
+                }
+
+            }
+        });
+
+
+    }
+
+    function extract(title,id){
+        omdb_url = "http://www.omdbapi.com/?i=tt3896198&apikey=ecdad4ed&t=";
+    $.ajax({
+             type: 'GET',
+             url: omdb_url + title,
+             dataType: 'json',
+
+             success: function (data) {
+                 $('#recommend_movies').append(recommendMovieDataTpl(data,id));
+             }
+         })
+     };
+recommendMovieDataTpl = (movie,id) =>
+    {return `<div  class="movie__poster--featured" style="width:140px;height: 200px;float:left">
+<img src="${movie.Poster}" style="width: 140px;
+  height: 200px; margin-left:20px" onclick="window.location='/player/${id}/1/'"/>
+  </div>
+`}
+</script>
+{% endblock %}
+
+{% block js %}
+<script>
+
+    function get_movie_info(title) {
+     const defaultTitle = 'dead+poets+society';
+     omdb_url = "http://www.omdbapi.com/?i=tt3896198&apikey=ecdad4ed&t="
+     var recommend_list;
+     $.ajax({
+         type: 'GET',
+         url: omdb_url + title.replace(/ /gi, '+'),
+         dataType: 'json',
+         success: function (data) {
+             $('#movie_name').text(data.Title+' ('+data.Released.slice(-4)+')');
+             $('#movie_Director').text(data.Director)
+             $('#movie_Writer').text(data.Writer)
+             $('#movie_Actors').text(data.Actors)
+             $('#movie_Genre').text(data.Genre)
+             $('#movie_plot').text(data.Plot)
+             $('#movie_Rated').text(data.Rated)
+             $('#rating').text(data.Ratings[0].Value+data.Ratings[1].Value+data.Ratings[2].Value)
+             console.log(parseInt(data.imdbID[4]))
+
+
+             //console.log(movieData)
+         }
+     })
+ }
+     get_movie_info('{{movie.title_without_year}}');
+
+</script>
+<!--播放页面-->
+<script>
+    // 2. This code loads the IFrame Player API code asynchronously.
+    var tag = document.createElement('script');
+
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    // 3. This function creates an <iframe> (and YouTube player)
+    //    after the API code downloads.
+    var player;
+
+    function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+            height: '450',
+            width: '760',
+            videoId: '{{movie.youtubeId}}',
+            events: {
+                'onReady': onPlayerReady,
+                //'onStateChange': onPlayerStateChange
+            }
+        });
+    }
+
+    // 4. The API will call this function when the video player is ready.
+    function onPlayerReady(event) {
+        event.target.playVideo();
+    }
+
+    // 5. The API calls this function when the player's state changes.
+    //    The function indicates that when playing a video (state=1),
+    //    the player should play for six seconds and then stop.
+    var done = false;
+
+    function onPlayerStateChange(event) {
+        if (event.data == YT.PlayerState.PLAYING && !done) {
+            setTimeout(stopVideo, 60000);
+            done = true;
+        }
+    }
+
+    function stopVideo() {
+        player.stopVideo();
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#btn-col").click(function () {
+            var mid = {{movie.id}};
+            var uid = {{session['user_id']}};
+            $.ajax({
+                url: "{{ url_for('home.moviecol_add') }}",
+                type: "GET",
+                data: "mid=" + mid + "&uid=" + uid,
+                dataType: "json",
+                success: function (res) {
+                    if (res.ok == 1) {
+                        $("#show_col_msg").empty();
+                        $("#show_col_msg").append("收藏成功！");
+                    } else {
+                        $("#show_col_msg").empty();
+                        $("#show_col_msg").append("已经收藏！");
+                    }
+                }
+            })
+        });
+    });
+</script>
+<script>
+
+</script>
+<!--播放页面-->
+{% endblock %}
