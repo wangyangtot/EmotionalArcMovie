@@ -2,7 +2,7 @@
 from . import home
 from flask import render_template, redirect, url_for, flash, session, request
 from app.home.forms import RegistForm, LoginForm, UserdetailForm, PwdForm, CommentForm
-from app.models import User, Userlog, Movie, Comment, Moviecol
+from app.models import User, Userlog, Movie, Comment, Moviecol,Rating
 from werkzeug.security import generate_password_hash
 from werkzeug.utils import secure_filename
 import uuid
@@ -74,17 +74,18 @@ def change_recommend_movie():
         range_value = request.args.get("range_value", 'a'),
         range_value = float(range_value[0])
         movie_name = request.args.get("title", 'a')
-        print(range_value)
-        print(movie_name)
+        with open('static/mood/movie_name2sentiment_sim_index.pkl', 'rb') as f:
+            movie_name2sentiment_sim_index = pickle.load(f, encoding='latin1')
+        index_in_sentiment=movie_name2sentiment_sim_index[movie_name]
         with open('static/mood/title2id.pkl', 'rb') as f:
             title2id = pickle.load(f, encoding='latin1')
         id = title2id[movie_name]['id']
         with open('static/mood/ids2genome_sim_index.pkl', 'rb') as f:
             ids2genome_sim_index = pickle.load(f, encoding='latin1')
-        index = ids2genome_sim_index[id]
+        genome_index = ids2genome_sim_index[id]
         genome_sim_Matrix = np.load('static/mood/genome_similarities_Matrix.npy')
-        recommend_index_by_genome = np.argsort(genome_sim_Matrix[index])[::-1][1:100].tolist()
-        genome_similarities=np.sort(genome_sim_Matrix[index])[::-1][1:100]
+        recommend_index_by_genome = np.argsort(genome_sim_Matrix[genome_index])[::-1][1:100].tolist()
+        genome_similarities=np.sort(genome_sim_Matrix[genome_index])[::-1][1:100]
         with open('static/mood/ids2genome_sim_index.pkl', 'rb') as f:
             ids2genome_sim_index = pickle.load(f, encoding='latin1')
         genome_sim_index2ids = dict(zip(ids2genome_sim_index.values(), ids2genome_sim_index.keys()))
@@ -93,23 +94,63 @@ def change_recommend_movie():
         recommend_title_by_genome=[]
         for i in recommend_id_by_genome:
             recommend_title_by_genome += (movies[movies['movieId'] == i]['title_without_year'].values.tolist());
-        #print(recommend_title_by_genome)
-        with open('static/mood/movie_name2sentiment_sim_index.pkl', 'rb') as f:
-            movie_name2sentiment_sim_index = pickle.load(f, encoding='latin1')
         recommend_index_in_sentiment=[movie_name2sentiment_sim_index[i] for i in recommend_title_by_genome]
         sentiment_sim_Matrix = np.load('static/mood/sentiment_similarities_Matrix.npy')
-        sentiment_similarities=np.asarray([sentiment_sim_Matrix[index][j] if (j<len(sentiment_sim_Matrix) and index<len(sentiment_sim_Matrix)) else 0 for j in recommend_index_in_sentiment ])
+        sentiment_similarities=np.asarray([sentiment_sim_Matrix[index_in_sentiment][j] if (j<len(sentiment_sim_Matrix) and index_in_sentiment<len(sentiment_sim_Matrix)) else 0 for j in recommend_index_in_sentiment ])
         total_similarities=genome_similarities*(1-range_value)+sentiment_similarities*range_value
         select_index=np.argsort(total_similarities)[::-1][:8]
         final_id=[recommend_id_by_genome[i] for i in select_index]
         final_title=[recommend_title_by_genome[i] for i in select_index]
-        #final_title = movies[movies['movieId'].isin(final_id)]['title_without_year'].values
         final_title = [i.replace(' ', '+') for i in final_title]
-        print("change recommend")
-        print(final_title)
-        print(final_id)
+        #print("change recommend")
+        #print(final_title)
+        #print(final_id)
         data = {"recMovieTitle": final_title,"recMovieId":final_id}
         return json.dumps(data, indent=4)
+
+
+@home.route("/change_recommend_movie_yes", methods=["GET", "POST"])
+def change_recommend_movie_yes():
+    if request.method == "GET":
+        range_values = request.args.get("range_value", '0.05'),
+        range_value = float(range_values[0])
+        user_id = request.args.get("user_id", 'a')
+        movie_name = request.args.get("title", 'a'),
+        movie_name = movie_name[0]
+        with open('static/mood/movie_name2sentiment_sim_index.pkl', 'rb') as f:
+            movie_name2sentiment_sim_index = pickle.load(f, encoding='latin1')
+        movieIndex_in_sentimentMatrix=movie_name2sentiment_sim_index[movie_name]
+        import turicreate as tc
+        matrix_fac_model=tc.load_model('static/models/turi_matrix_factorization_model')
+        recommend_by_maxtrixFac = matrix_fac_model.recommend(users=[user_id], k=200)
+        recommend_movieID_by_maxtrixFac=recommend_by_maxtrixFac['movieId']
+        recommend_score_by_maxtrixFac=recommend_by_maxtrixFac['score']
+        movies = pd.read_pickle('static/mood/movies.pkl')
+        recommend_title_by_maxtrixFac = []
+        sel_recommend_score_by_maxtrixFac=[]
+        sel_recommend_movieID_by_maxtrixFac=[]
+        for i in range(len(recommend_movieID_by_maxtrixFac)):
+            sel=movies[movies['movieId'] == recommend_movieID_by_maxtrixFac[i]]
+            if sel.shape[0]!=0:
+                recommend_title_by_maxtrixFac += (sel['title_without_year'].values.tolist());
+                sel_recommend_score_by_maxtrixFac.append(recommend_score_by_maxtrixFac[i])
+                sel_recommend_movieID_by_maxtrixFac.append(recommend_movieID_by_maxtrixFac[i])
+
+        with open('static/mood/movie_name2sentiment_sim_index.pkl', 'rb') as f:
+            movie_name2sentiment_sim_index = pickle.load(f, encoding='latin1')
+        recommend_index_in_sentiment = [movie_name2sentiment_sim_index[i] for i in recommend_title_by_maxtrixFac]
+        sentiment_sim_Matrix = np.load('static/mood/sentiment_similarities_Matrix.npy')
+        sentiment_similarities = np.asarray([sentiment_sim_Matrix[movieIndex_in_sentimentMatrix][j] if (
+        j < len(sentiment_sim_Matrix) and movieIndex_in_sentimentMatrix < len(sentiment_sim_Matrix)) else 0 for j in
+                                             recommend_index_in_sentiment])
+        total_similarities = np.array(sel_recommend_score_by_maxtrixFac) + sentiment_similarities * range_value
+        select_index=np.argsort(total_similarities)[::-1][:8]
+        print(select_index)
+        final_id=[sel_recommend_movieID_by_maxtrixFac[i] for i in select_index]
+        final_title=[recommend_title_by_maxtrixFac[i] for i in select_index]
+        data = {"recMovieTitle": final_title, "recMovieId": final_id}
+        return json.dumps(data, indent=4)
+
 
 
 
@@ -354,19 +395,79 @@ def moviecol_add():
         movie_id=int(mid)
     ).count()
     # 已收藏
-    if moviecol == 1:
+    if moviecol==1:
         data = dict(ok=0)
     # 未收藏进行收藏
     if moviecol == 0:
         moviecol = Moviecol(
             user_id=int(uid),
-            movie_id=int(mid)
+            movie_id=int(mid),
         )
         db.session.add(moviecol)
         db.session.commit()
         data = dict(ok=1)
     import json
     return json.dumps(data)
+
+@home.route("/rating/add/", methods=["GET"])
+# @user_login_req
+def rating_add():
+    """
+    add the movie rating
+    """
+    uid = request.args.get("uid", "")
+    mid = request.args.get("mid", "")
+    new_rating_value=float(request.args.get("value", 0))
+    ratingcol=Rating.query.filter_by(
+            user_id=int(uid),
+
+    ).filter_by(
+        movie_id=int(mid)
+
+    ).all()
+    if len(ratingcol) == 1:
+        setattr(ratingcol[0], 'rating_value', new_rating_value)
+        db.session.commit()
+        data = dict(ok='Changed The Value Successfully')
+    if len(ratingcol) == 0:
+        new_rating = Rating(
+            user_id=int(uid),
+            movie_id=int(mid),
+            rating_value=new_rating_value
+        )
+
+
+        data = dict(ok='Set The Value Successfully')
+        db.session.add(new_rating)
+        db.session.commit()
+    return json.dumps(data)
+
+@home.route("/rating/find/", methods=["GET"])
+# @user_login_req
+def rating_find():
+    """
+    find  the movie rating
+    """
+    uid = request.args.get("uid", "")
+    mid = request.args.get("mid", "")
+    ratingcol = Rating.query.filter_by(
+            user_id=int(uid),
+
+    ).filter_by(
+        movie_id=int(mid)
+
+    ).all()
+
+    # have rating record
+    if len(ratingcol) == 1:
+        data = dict(rating_value = float(ratingcol[0].rating_value))
+    if len(ratingcol) == 0:#rating record is empty
+        data = dict(rating_value=0)
+    print (data)
+    return json.dumps(data)
+
+
+
 
 
 @home.route("/moviecol/<int:page>/")
@@ -386,28 +487,6 @@ def moviecol(page=None):
     return render_template("home/moviecol.html",page_data=page_data)
 
 
-
-
-# 首页
-'''
-@home.route("/<int:page>/", methods=["GET"])
-@home.route("/", methods=["GET"])
-def index(page=None):
-    """
-    首页电影列表
-    """
-    return render_template(
-        "home/index.html",)
-'''
-
-''''@home.route("/animation/")
-def animation():
-    data = Preview.query.all()
-    for v in data:
-        v.id = v.id - 1
-    return render_template("home/animation.html", data=data)
-'''
-
 @home.route("/search/<int:page>/")
 def search(page=None):
     if page is None:
@@ -424,48 +503,5 @@ def search(page=None):
     page_data.key = key
     return render_template("home/search.html", movie_count=movie_count, key=key, page_data=page_data)
 
-
-@home.route("/play/<int:id>/<int:page>/", methods=["GET", "POST"])
-def play(id=None, page=None):
-    """
-    播放电影
-    """
-    movie = Movie.query.join(Tag).filter(
-        Tag.id == Movie.tag_id,
-        Movie.id == int(id)
-    ).first_or_404()
-
-    if page is None:
-        page = 1
-    page_data = Comment.query.join(
-        Movie
-    ).join(
-        User
-    ).filter(
-        Movie.id == movie.id,
-        User.id == Comment.user_id
-    ).order_by(
-        Comment.addtime.desc()
-    ).paginate(page=page, per_page=5)
-    form = CommentForm()
-    if "user" in session and form.validate_on_submit():
-        data = form.data
-        comment = Comment(
-            content=data["content"],
-            movie_id=movie.id,
-            user_id=session["user_id"]
-        )
-        db.session.add(comment)
-        db.session.commit()
-        movie.commentnum = movie.commentnum + 1
-        db.session.add(movie)
-        db.session.commit()
-        flash("添加评论成功！", "ok")
-        return redirect(url_for('home.play', id=movie.id, page=1))
-    # 放在后面避免添加评论播放量涨2
-    movie.playnum = movie.playnum + 1
-    db.session.add(movie)
-    db.session.commit()
-    return render_template("home/play.html", movie=movie, form=form, page_data=page_data)
 
 

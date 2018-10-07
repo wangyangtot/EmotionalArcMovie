@@ -7,7 +7,8 @@
 <script type="text/javascript" src="{{ url_for('static',filename='ueditor/ueditor.config.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static',filename='ueditor/ueditor.all.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static',filename='ueditor/lang/zh-cn/zh-cn.js') }}"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.css">
 
 </head>
 <!--播放页面-->
@@ -25,13 +26,70 @@
 <div class="row">
     <div class="col-md-8">
         <div id="player"></div>
+
     </div>
-    <div class="col-md-4" style="width:420px;height:440px;margin-top:0px;margin-left:-20px;" >
+    <div class="col-md-4" style="width:400px;height:440px;margin-top:0px;margin-left:-20px;" >
         <div class="panel panel-default" style="background-color:#4d4d4d !important;">
             <div class="panel-heading" style="background-color:#4d4d4d !important;">
                 <h3 id="movie_name" class="panel-title" style="color:white;font-weight:bold;font-style:italic;" ><span class="glyphicon glyphicon-facetime-video"></span></h3>
             </div>
             <div class="panel-body" style="height:450px;overflow:scroll;">
+                {% if "user" not in session %}
+                <div id="rateYo_no"></div>
+                <div style="margin-top:-20px;margin-left: 120px">
+                    <button  style="font-weight:200;color:#b2182b;font-weight:bold;font-style:italic;"><a href="{{ url_for('home.login') }}" target="_blank"
+                                 class="text-info">Log In</a> To Rate</button>
+                </div>
+                {%endif%}
+                {% if "user" in session %}
+                <div id="rateYo_yes"></div>
+                <div style="margin-top:-20px;margin-left: 120px">
+                    <button id="rating_submit" style="font-weight:200;font-weight:bold;font-style:italic;">Rate this</button>
+                </div>
+                <p style="color:#ffffff;font-weight:bold;font-style:italic;" id="show_rating_msg_yes"></p>
+                <script>
+                    var mid = {{movie.id}};
+                    var uid = {{session['user_id']}};
+                    $.ajax({
+                        url: "{{ url_for('home.rating_find') }}",
+                        type: "GET",
+                        data: "mid=" + mid + "&uid=" + uid,
+                        dataType: "json",
+                        success: function (res) {
+                            var init_rating=res.rating_value
+                            $("#rateYo_yes").rateYo("option", "rating", init_rating)
+                        }
+                            });
+                    var $rateYo=$("#rateYo_yes").rateYo({
+                    starWidth: "20px",
+                    multiColor: {
+                        "startColor": "#d23629", //RED
+                        "endColor": "#0be246" //GREEN
+                    },
+                    halfStar: true,
+                    onChange: function (rating, rateYoInstance) {
+                    },
+                });
+
+                $("#rating_submit").click(function () {
+                    var mid = {{movie.id}};
+                    var uid = {{session['user_id']}};
+                    var rating = $rateYo.rateYo("rating");
+                    $.ajax({
+                        url: "{{ url_for('home.rating_add') }}",
+                        type: "GET",
+                        data: "mid=" + mid + "&uid=" + uid + "&value=" + rating,
+                        dataType: "json",
+                        success: function (res) {
+                            $('#show_rating_msg_yes').text(res.ok).fadeIn(600).delay(600).fadeOut(600);
+                        }
+                            });
+
+                    });
+
+
+                </script>
+                {%endif%}
                 <table class="table">
                     <tr>
                         <td style="color:white;font-weight:bold;font-style:italic;width:30%">
@@ -89,14 +147,47 @@
     <div class="col-md-12" style="margin-top:6px;">
         <div class="panel panel-default">
             <div class="panel-heading" style="background-color:#4d4d4d !important;">
-                <h3 class="panel-title" style="color:white;font-weight:bold;font-style:italic;"><span class="glyphicon glyphicon-comment"></span>&nbsp;recommend movies for you
+                {%if user in session%}
+                <h3 class="panel-title" style="color:white;font-weight:bold;font-style:italic;"><span class="glyphicon glyphicon-comment"></span>&nbsp;Customed Recommendation For You
                 </h3>
+                {%endif%}
+                {%if user not in session%}
+                <h3 class="panel-title" style="color:white;font-weight:bold;font-style:italic;"><span class="glyphicon glyphicon-comment"></span>&nbsp;Genome recommendation for you
+                </h3>
+                {%endif%}
+
             </div>
             <div class="panel-body" style="background-color:#4d4d4d !important;margin-left:-30px;height:300px ">
                 <span style="width:100px;margin-left:200px;margin-top:10px;color:#ccc;">Weak</span>
                 <span style="width:100px;margin-left:500px;margin-top:10px;color:#ccc;">Strong</span>
-
+                {% if "user" not in session %}
                 <div class="ui inverted grey range" id="recommend_slider" style="width:400px;margin-left:300px;margin-top:-20px;"></div>
+                {%endif%}
+                {% if "user"  in session %}
+                <div class="ui inverted grey range" id="recommend_slider_yes" style="width:400px;margin-left:300px;margin-top:-20px;"></div>
+                <script>
+                    function change_recommend_movie_yes(RangeValue, movie_name) {
+                        var uid = {{session['user_id']}};
+                        $.ajax({
+                            type: 'GET',
+                            url: '/change_recommend_movie_yes',
+                            data: {"range_value": RangeValue, "title": movie_name, "user_id": uid},
+                            dataType: 'json',
+                            success: function (data) {
+                                $("#recommend_movies").empty();
+                                recommend_title_list = data.recMovieTitle;
+                                recommend_id_list = data.recMovieId;
+                                for (j = 0; j < recommend_title_list.length; j++) {
+                                    extract(recommend_title_list[j], recommend_id_list[j]);
+
+                                }
+
+                            }
+                        });
+
+
+                    };</script>
+                {%endif%}
                 <div class="panel-movie" id="recommend_movies" style="float:left;margin-top:20px;"></div>
             </div>
         </div>
@@ -188,15 +279,42 @@
         </div>
     </div>
 </div>
+
 <script>
-    $('#recommend_slider').range({
+    $("#rateYo_no").rateYo({
+        starWidth: "20px",
+        multiColor: {
+            "startColor": "#d23629", //RED
+            "endColor": "#0be246" //GREEN
+             },
+            rating: 0,
+            readOnly: true,
+            halfStar: true,
+        });
+        $("#show_rating_msg_no").empty();
+        $("#show_rating_msg_no").append("Log In For Rating");
+
+    //customed recommendation if users has logged in
+$('#recommend_slider_yes').range({
         min: 0,
         max: 0.5,
         start: 0.05,
         step:0.05,
         onChange: function (val) {
             RangeValue = val;
-            console.log(RangeValue);
+            change_recommend_movie_yes(RangeValue, '{{movie.title_without_year}}')
+        }
+            });
+
+
+
+$('#recommend_slider').range({
+        min: 0,
+        max: 0.5,
+        start: 0.05,
+        step:0.05,
+        onChange: function (val) {
+            RangeValue = val;
             change_recommend_movie(RangeValue, '{{movie.title_without_year}}')
         }
             });
@@ -211,7 +329,6 @@ function change_recommend_movie(RangeValue,movie_name) {
                 recommend_title_list = data.recMovieTitle;
                 recommend_id_list=data.recMovieId;
                 for (j = 0; j < recommend_title_list.length; j++) {
-                    console.log(recommend_title_list[j]);
                     extract(recommend_title_list[j],recommend_id_list[j]);
 
                 }
@@ -263,10 +380,7 @@ recommendMovieDataTpl = (movie,id) =>
              $('#movie_plot').text(data.Plot)
              $('#movie_Rated').text(data.Rated)
              $('#rating').text(data.Ratings[0].Value+data.Ratings[1].Value+data.Ratings[2].Value)
-             console.log(parseInt(data.imdbID[4]))
 
-
-             //console.log(movieData)
          }
      })
  }
