@@ -1,0 +1,98 @@
+{% extends "home/home.html" %}
+
+{% block css%}
+<link href='https://fonts.googleapis.com/css?family=Josefin+Sans|Audiowide|Berkshire+Swash|Cabin+Sketch|Raleway:400,700'
+      rel='stylesheet' type='text/css'/>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+      />
+<link rel="stylesheet" href="{{url_for('static',filename='base/css/LionCoders.css')}}">
+<style>
+.info_me {
+    display:inline;
+     margin-right: 20px;
+    text-align: center;
+    width: 35px;
+    height: 35px;
+     margin-top: 10px;
+}
+.info_me a {
+    border: 2px solid white;;
+    color: white;
+    display: inline-block;
+    height: 35px;
+    width: 35px;
+}
+ul#info_me a:hover {
+    border: 2px solid #4d4d4d;
+    color: #4d4d4d;
+}
+</style>
+{%endblock%}
+
+{% block content %}
+<div class="home">
+    <div class="container">
+        <div class="name-block" style="height:100%;;background-color:#4d4d4d !important">
+            <div class="name-block-container">
+                <h1><p>Hi, I'm</p>
+                    <p>Dylana (Yangyang) Wang</p></h1>
+                <h2>Data Scientist</h2>
+                <a class="btn btn-download" href="/YiweiLiu_Resume.pdf" download="Dylana_Wang_Resume">Download
+                    Resume</a>
+                <a class="btn btn-online"
+                   href="https://drive.google.com/file/d/1JpzRRl5kY8ZSrI8xAf0HlESrGT9PmN5M/view?usp=sharing"
+                   target="_blank">View Resume Online</a>
+
+            </div>
+
+        </div>
+        <div class="content" id="about" style="margin-left:35%">
+            <div class="block-content">
+                <h3 class="block-title">Profile</h3>
+                <div class="row">
+                    <div class="col-md-7">
+                        <p> &nbsp &nbsp &nbsp &nbsp I am a Ph.D. candidate in Economics, and I just got Master of
+                            Science in Applied Mathematics from UCR this summer (2017). I also have done multiple web
+                            development and mobile development projects.</p>
+                        <p> &nbsp &nbsp&nbsp &nbsp My education background has provided me a variety of technical skills
+                            and people skills which allow me to relate to all levels of management and work successfully
+                            with a diversity of personalities. </p>
+                        <p> &nbsp &nbsp&nbsp &nbsp I also enjoy being challenged and working on projects that require me
+                            to work outside my comfort zone and knowledge set, as continuing to learn new languages and
+                            development techniques are important to me and the success of any organization.</p>
+                        <img class="sign" src="images/signature.png" alt=""/>
+                    </div>
+                    <div class="col-md-5">
+                        <ul class="info-list">
+                            <li><strong>Name : </strong> Dylana (yangyang) Wang</li>
+                            <li><strong>Address : </strong> Riverside, CA</li>
+                            <li><strong>Email : </strong> wangyangtot@gmail.com</li>
+                            <li><strong>Phone : </strong> +1-951-801-1451</li>
+                            <li><strong>Interest : </strong> Full Time Data Scientist</li>
+                            <li class="info_me" ><a href="https://www.linkedin.com/in/dylana-wang-971982163/" target="_blank"><i
+                                    class="fa fa-linkedin"></i></a></li>
+                            <li class="info_me" ><a href="https://www.facebook.com/wangyangtot" target="_blank"><i
+                                    class="fa fa-facebook"></i></a></li>
+                            <li class="info_me"><a href="https://github.com/wangyangtot" target="_blank"><i
+                                    class="fa fa-github"></i></a>
+                        </ul>
+                    </div>
+
+                </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--
+<div style="margin-top:40%">
+    <audio controls>
+        <source src="horse.ogg" type="audio/ogg">
+        <source src="{{ url_for('static',filename='video/backgroud.mp3')}}" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+</div>-->
+{%endblock%}

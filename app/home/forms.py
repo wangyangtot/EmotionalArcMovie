@@ -15,7 +15,7 @@ class RegistForm(FlaskForm):
         render_kw={
             "class": "form-control input-lg",
             "placeholder": "Your email *",
-            "style": "border-radius: 1.5rem; color:white",
+            "style": "border-radius: 1.5rem",
         }
     )
 
@@ -28,7 +28,7 @@ class RegistForm(FlaskForm):
         render_kw={
             "class": "form-control input-lg",
             "placeholder": " the password！",
-            "style": "border-radius: 1.5rem; color:white"
+            "style": "border-radius: 1.5rem"
         }
     )
     repwd = PasswordField(
@@ -41,7 +41,7 @@ class RegistForm(FlaskForm):
         render_kw={
             "class": "form-control input-lg",
             "placeholder": "请输入确认密码！",
-            "style": "border-radius: 1.5rem; color:white"
+            "style": "border-radius: 1.5rem;"
         }
     )
     submit = SubmitField(

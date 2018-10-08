@@ -143,12 +143,14 @@ def change_recommend_movie_yes():
         sentiment_similarities = np.asarray([sentiment_sim_Matrix[movieIndex_in_sentimentMatrix][j] if (
         j < len(sentiment_sim_Matrix) and movieIndex_in_sentimentMatrix < len(sentiment_sim_Matrix)) else 0 for j in
                                              recommend_index_in_sentiment])
-        total_similarities = np.array(sel_recommend_score_by_maxtrixFac) + sentiment_similarities * range_value
+        total_similarities = np.array(sel_recommend_score_by_maxtrixFac)*(1-range_value) + sentiment_similarities * range_value
         select_index=np.argsort(total_similarities)[::-1][:8]
         print(select_index)
         final_id=[sel_recommend_movieID_by_maxtrixFac[i] for i in select_index]
         final_title=[recommend_title_by_maxtrixFac[i] for i in select_index]
         data = {"recMovieTitle": final_title, "recMovieId": final_id}
+        print(final_title)
+        print(final_id)
         return json.dumps(data, indent=4)
 
 
@@ -504,4 +506,6 @@ def search(page=None):
     return render_template("home/search.html", movie_count=movie_count, key=key, page_data=page_data)
 
 
-
+@home.route("/AboutDylana", methods=["GET", "POST"])
+def AboutDylana():
+    return render_template("home/AboutDylana.html")
