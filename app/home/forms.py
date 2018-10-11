@@ -8,8 +8,8 @@ class RegistForm(FlaskForm):
     email = StringField(
         label="Email",
         validators=[
-            DataRequired("邮箱不能为空！"),
-            Email("邮箱格式不正确！")
+            DataRequired("Enter the Email！"),
+            Email("Email Must Match！")
         ],
         description="email",
         render_kw={
@@ -22,9 +22,9 @@ class RegistForm(FlaskForm):
     pwd = PasswordField(
         label="Password",
         validators=[
-            DataRequired("密码不能为空！")
+            DataRequired("Enter Your Password！")
         ],
-        description="密码",
+        description="Password",
         render_kw={
             "class": "form-control input-lg",
             "placeholder": " the password！",
@@ -32,15 +32,15 @@ class RegistForm(FlaskForm):
         }
     )
     repwd = PasswordField(
-        label="Comfirm password",
+        label="Confirm The Password",
         validators=[
-            DataRequired("请输入确认密码！"),
-            EqualTo('pwd', message="两次密码不一致！")
+            DataRequired("Confirm the Passwords！"),
+            EqualTo('pwd', message="Passowrd Must Match！")
         ],
         description="comfirm password",
         render_kw={
             "class": "form-control input-lg",
-            "placeholder": "请输入确认密码！",
+            "placeholder": "Confirm The password！",
             "style": "border-radius: 1.5rem;"
         }
     )
@@ -65,7 +65,7 @@ class LoginForm(FlaskForm):
     email = StringField(
         label="email",
         validators=[
-            DataRequired("账号不能为空！")
+            DataRequired("Enter your email！")
         ],
         description="email",
         render_kw={
@@ -77,7 +77,7 @@ class LoginForm(FlaskForm):
     pwd = PasswordField(
         label="Password",
         validators=[
-            DataRequired("密码不能为空！")
+            DataRequired("Enter your password！")
         ],
         description="password",
         render_kw={
@@ -100,29 +100,29 @@ class UserdetailForm(FlaskForm):
     email = StringField(
         label="email",
         validators=[
-            DataRequired("邮箱不能为空！"),
-            Email("邮箱格式不正确！")
+            DataRequired("Enter your password"),
+            Email("Passwords must match")
         ],
-        description="邮箱",
+        description="Email",
         render_kw={
             "class": "form-control",
-            "placeholder": "请输入邮箱！",
+            "placeholder": "Your Email *",
         }
     )
 
     face = FileField(
-        label="头像",
+        label="Face",
         validators=[
-            DataRequired("请上传头像！")
+            DataRequired("Upload Your Selfie")
         ],
-        description="头像",
+        description="Selfie",
     )
     info = TextAreaField(
-        label="简介",
+        label="Description",
         validators=[
-            DataRequired("简介不能为空！")
+            DataRequired("Enter your Description")
         ],
-        description="简介",
+        description="info",
         render_kw={
             "class": "form-control",
             "rows": 10
@@ -141,7 +141,7 @@ class PwdForm(FlaskForm):
     old_pwd = PasswordField(
         label="Old Password",
         validators=[
-            DataRequired("旧密码不能为空！")
+            DataRequired("Enter the Old Password！")
         ],
         description="Old pwd",
         render_kw={
@@ -152,7 +152,7 @@ class PwdForm(FlaskForm):
     new_pwd = PasswordField(
         label="New Password",
         validators=[
-            DataRequired("新密码不能为空！"),
+            DataRequired("Enter Your New Password"),
         ],
         description="new pwd",
         render_kw={
@@ -161,7 +161,7 @@ class PwdForm(FlaskForm):
         }
     )
     submit = SubmitField(
-        '修改密码',
+        'Change The Password',
         render_kw={
             "class": "btn btn-light",
             "style": "border-radius: 1.5rem;"
@@ -170,17 +170,17 @@ class PwdForm(FlaskForm):
 
 class CommentForm(FlaskForm):
     content = TextAreaField(
-        label="内容",
+        label="Review",
         validators=[
-            DataRequired("请输入内容！"),
+            DataRequired("Type in the Review！"),
         ],
-        description="内容",
+        description="Review",
         render_kw={
             "id": "input_content"
         }
     )
     submit = SubmitField(
-        '提交评论',
+        'Submit',
         render_kw={
             "class": "btn btn-success",
             "id": "btn-sub"

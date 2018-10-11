@@ -5,7 +5,6 @@ from app import db
 class User(db.Model):
     __tablename__ = "user"
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), unique=True)
     pwd = db.Column(db.String(100))
     email = db.Column(db.String(100), unique=True)
     info = db.Column(db.Text)  # 个性简介
@@ -31,17 +30,6 @@ class Userlog(db.Model):
     ip = db.Column(db.String(100))
     addtime = db.Column(db.DateTime, index=True, default=datetime.now)
 
-'''
-class Tag(db.Model):
-    __tablename__ = "tag"
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), unique=True)
-    addtime = db.Column(db.DateTime, index=True, default=datetime.now)
-    movies = db.relationship("Movie", backref='tag')
-
-    def __repr__(self):
-        return "<tag %r>" % self.name
-'''
 
 class Movie(db.Model):
     __tablename__ = "movie"
@@ -57,24 +45,8 @@ class Movie(db.Model):
 
     def __repr__(self):
         return "<Movie %r>" % self.title
-    #url = db.Column(db.String(255), unique=True)
-    #area = db.Column(db.String(255))
-    #release_time = db.Column(db.Date)
-    #length = db.Column(db.String(100))
-    # info = db.Column(db.Text)
-    # logo = db.Column(db.String(255), unique=True)
-    # star = db.Column(db.SmallInteger)
 
-'''class Preview(db.Model):
-    __tablename__ = "preview"
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(255), unique=True)
-    logo = db.Column(db.String(255), unique=True)
-    addtime = db.Column(db.DateTime, index=True, default=datetime.now)
 
-    def __repr__(self):
-        return "<preview %r>" % self.title
-'''
 class Comment(db.Model):
     __tablename__ = "comment"
     id = db.Column(db.Integer, primary_key=True)
@@ -85,6 +57,18 @@ class Comment(db.Model):
 
     def __repr__(self):
             return "<Comment %r>" % self.id
+
+class Rating(db.Model):
+    __tablename__ = "rating"
+    id = db.Column(db.Integer, primary_key=True)
+    rating_value = db.Column(db.Float)
+    movie_id = db.Column(db.Integer, db.ForeignKey('movie.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    #addtime = db.Column(db.DateTime, index=True, default=datetime.now)
+
+    def __repr__(self):
+            return "<rating %r>" % self.id
+
 
 
 class Moviecol(db.Model):

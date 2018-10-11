@@ -7,18 +7,16 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='mood/mood.css')}}">
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/semantic.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/semantic.min.css" type="text/css"
           rel="stylesheet"/>
-    <script type="text/javascript"  src="{{ url_for('static',filename='mood/range.js')}}"></script>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='mood/range.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='base/css/bootstrap-movie.css')}}">
 
 </head>
-
-<body style="background-color: white !important;" >
 <!-- ARTIST SIDEBAR (RIGHT SIDE) -->
-<div class="ui thin sidebar right inverted vertical menu" id="artist_sidebar"  style="width:400px;height: 800px !important;">
+<div class="ui thin sidebar right inverted vertical menu" id="artist_sidebar"
+     style="width:400px;height: 800px !important;">
     <div class="item">
         <i class="close icon link" id="artist_sidebar_close"></i>
         <h2 class="ui inverted header" id="sidebar_header">
@@ -29,13 +27,52 @@
         </div>
     </div>
     <div id="emotion_influence">
-        <h3 style="color:white;text-align:center; padding:3px"> Emotion Influence </h3>
-       <div class="ui range" id="emotion_range"></div>
-     </div>
+        <h3 style="color:white;text-align:center; padding:3px;font-weight:bold;font-style:italic;"> Emotion
+            Influence </h3>
+        <div><span style="width:40px;margin-left:50px;margin-top:10px;color:#ccc;">Weak</span>
+            <span style="width:40px;margin-left:220px;margin-top:10px;color:#ccc;">Strong</span>
+        </div>
+        <div class="ui range" id="emotion_range" style="width:200px;margin-top:-20px;margin-left:100px"></div>
+    </div>
     <div class="borderless item">
-        <p class="recommend_movie_header">recommend movies</p>
+        <!--genome recommendation if users has not logged in-->
+        {% if "user" not in session%}
+        <h5 class="panel-title" style="color:white;font-weight:bold;font-style:italic;">
+            <span class="glyphicon glyphicon-comment"></span>&nbsp;Genome Recommendations For You
+        </h5>
         <div class="content" id="recommend_content"></div>
+        {%endif%}
+        <!--customed recommendation if users has logged in-->
 
+        {% if "user" in session%}
+        <h3 class="panel-title" style="color:white;font-weight:bold;font-style:italic;">
+            <span class="glyphicon glyphicon-comment"></span>&nbsp;Customed Recommendations For You
+        </h3>
+        <div class="content" id="recommend_content_yes"></div>
+        <script>
+            function change_recommend_movie_yes(RangeValue, movie_name) {
+                var uid = {{session['user_id']}};
+                $.ajax({
+                    type: 'GET',
+                    url: '/change_recommend_movie_yes',
+                    data: {"range_value": RangeValue, "title": movie_name, "user_id": uid},
+                    dataType: 'json',
+                    success: function (data) {
+                        $("#recommend_content_yes").empty();
+                        recommend_title_list = data.recMovieTitle;
+                        recommend_id_list = data.recMovieId;
+                        for (j = 0; j < recommend_title_list.length; j++) {
+                            console.log(recommend_title_list[j])
+                            extract_yes(recommend_title_list[j], recommend_id_list[j]);
+
+                        }
+
+                    }
+                });
+
+
+            };</script>
+        {%endif%}
     </div>
 
     <div class="ui dimmer" id="sidebar_dimmer">
@@ -45,16 +82,8 @@
 
 <!-- END ARTIST SIDEBAR -->
 
-<!-- TIMELINE SIDEBAR (BOTTOM) -->
-<div class="ui bottom inverted sidebar borderless menu overlay" id="timeline_sidebar">
-    <!-- <div class="item">
-      Visited
-    </div> -->
-</div>
-<!-- END TIMELINE SIDEBAR -->
 
-
-<div class="ui container pusher" id="main_container" style="background-color: white !important;">
+<div class="ui container pusher" id="main_container">
     <div class="ui dimmer" id="main_container_loader">
         <div class="ui text loader">Loading</div>
     </div>
@@ -71,17 +100,23 @@
 
         <!-- LABELS -->
         <div class="ui container" id="labels_container">
-            <a class="ui mini label popup_info green_back" style="background-color:#ef8a62"onclick="switch_color(this);"
+            <a class="ui mini label popup_info green_back" style="background-color:#ef8a62"
+               onclick="switch_color(this);"
                data-html="<b>Sublimity</b> includes this feelings:<br><i>Peacefulness<br>Nostalgic<br>Transcendence<br>Wonder<br>Tenderness</i>">group0</a>
-            <a class="ui mini label popup_info red_back"style="background-color:#fddbc7" onclick="switch_color(this);" data-html="<b>Unease</b> includes this feelings:
+            <a class="ui mini label popup_info red_back" style="background-color:#fddbc7"
+               onclick="switch_color(this);"
+               data-html="<b>Unease</b> includes this feelings:
         <br><i>Repulsive<br>Lethargy<br>Sadness<br>Fear<br>Tension</i>">group1</a>
-            <a class="ui mini label popup_info white_back" style="background-color:#ffffff"onclick="switch_color(this);"
+            <a class="ui mini label popup_info white_back" style="background-color:#ffffff"
+               onclick="switch_color(this);"
                data-html="<b>Style</b> includes this feelings:<br><i>Fancy<br>Cerebral<br>Mechanical<br></i>">group2</a>
-            <a class="ui mini label popup_info blue_back" style="background-color:#e0e0e0"onclick="switch_color(this);"
+            <a class="ui mini label popup_info blue_back" style="background-color:#e0e0e0"
+               onclick="switch_color(this);"
                data-html="<b>Vitality</b> includes this feelings:<br><i>Joyful activation<br>Power</i>">group3</a>
-            <a class="ui mini label popup_info grey_back"style="background-color:#999999" onclick="switch_color(this);"
+            <a class="ui mini label popup_info grey_back" style="background-color:#999999"
+               onclick="switch_color(this);"
                data-html="<b>Vitality</b> includes this feelings:<br><i>Joyful activation<br>Power</i>">group4</a>
-            <a class="ui mini label popup_info" style="background-color:#b2182b"  onclick="switch_color(this);"
+            <a class="ui mini label popup_info" style="background-color:#b2182b" onclick="switch_color(this);"
                data-html="<b>Vitality</b> includes this feelings:<br><i>Joyful activation<br>Power</i>">group5</a>
         </div>
 
@@ -101,55 +136,32 @@
             <button class="ui small icon grey button popup_info" id="zoom_rst" data-content="Reset zoom level">
                 <i class="refresh icon"></i>
             </button>
-            <button class="ui small icon grey button popup_info" id="examples" data-content="Show examples on the map">
+            <button class="ui small icon grey button popup_info" id="examples"
+                    data-content="Show examples on the map">
                 <i class="marker icon"></i>
             </button>
-            <!--<button class="ui small icon grey button popup_info" id="fisheye" data-content="Toggle fisheye on map">
-                <i class="eye icon"></i>
-            </button>-->
             <button class="ui small icon grey button popup_info" id="colorize" data-content="Colorize map">
                 <i class="eyedropper icon"></i>
             </button>
-
-            <!-- <button class="ui small icon grey button popup_info" id="bci" data-content="Recieve data from BCI">
-                <i class="street view icon"></i>
-            </button> -->
         </div>
-        <!-- SLIDER
-        <div class="ui grid" id="slider_grid">
-            <div class="centered row">
-                <h4 class="ui center aligned inverted header">LDA-b</h4>
-            </div>
-            <div class="centered row" id="slider_holder">
-                <div class="ui vertical inverted grey range"></div>
-            </div>
-            <div class="centered row">
-                <h4 class="ui center aligned inverted header">t-SNE-a</h4>
-            </div>
-        </div>
-    </div>-->
-
-    <!-- STREAM CHART -->
-
+    </div>
     <!-- CREDITS -->
     <div id="credits_container">
-        <p>Based on Ivana Andjelkovic's Moodplay: <a target='_blank'
-                                                     href="http://www.mat.ucsb.edu/~ivana/moodplay.html">article</a>
-            &amp; <a target='_blank' href="http://dl.acm.org/citation.cfm?id=2930280">ÄCM DL link</a></p>
+        <p>About <a target='_blank' href="http://www.mat.ucsb.edu/~ivana/moodplay.html">This Project </a>
+
+            & About <a target='_blank'  href="{{url_for('home.AboutDylana')}}"> The Contributor</a></p>
     </div>
 </div>
 </body>
 
-
 <!--<script src="static/js/js.cookie.js"></script>
 
 <script src="static/js/fisheye.js"></script>
-<script src="/static/js/avatar.js"></script>-->
-<script src="{{url_for('static',filename='mood/smallest_circle_enclosing.js')}}"></script>
+<script src="/static/js/avatar.js"></script>
+<script src="{{url_for('static',filename='mood/smallest_circle_enclosing.js')}}"></script>-->
+<script type="text/javascript" src="{{ url_for('static',filename='mood/range.js')}}"></script>
 <script src="{{url_for('static',filename='mood/data_receiver.js')}}"></script>
 <script src="{{url_for('static',filename='mood/helper.js')}}"></script>
-
-<!--<script src="static/js/stream_chart.js"></script>-->
 <script type="text/javascript">
     $('.popup_info').popup({variation: 'tiny inverted', position: 'right center'});
     $('.ui.accordion').accordion();
@@ -161,7 +173,6 @@
     $('#artist_sidebar_close').on('touchstart', function () {
         $('#artist_sidebar').removeClass('animating');
         $('#artist_sidebar').sidebar('hide');
-        //$('#artist_sidebar').removeClass('animating');
     });
 </script>
 
@@ -232,10 +243,12 @@
     function transform(d) {
         return "translate(" + x(d.x) + "," + y(d.y) + ")";
     }
+
     function transform_rect_2(d){
-        return "translate(" + x(d.x) + "," + (y(d.y)-100) + ")";
+        return "translate(" + (x(d.x)+10) + "," + (y(d.y)-100) + ")";
 
     }
+
 
     function transform_romb(d) {
         return "translate(" + (x(d.x) + 9.5) + "," + (y(d.y) - 6) + ")rotate(45)";
@@ -277,6 +290,46 @@
     }
 
     function zoomClick(direction) {
+        var //clicked = d3.event.target,
+            factor = ZOOMCLICK_FACTOR,
+            center = [width / 2, height / 2],
+            extent = zoom.scaleExtent(),
+            translate = zoom.translate(),
+            translate0 = [],
+            l = [],
+            view = {x: translate[0], y: translate[1], k: zoom.scale()};
+        var event = d3.event;
+        if (event) {
+            event.preventDefault();
+        }
+        target_zoom = zoom.scale() + direction * factor;
+        // from 150% of zoom, enlarge the zooming/make it faster (20% of actual value)
+        if (zoom.scale() > 1.5) {
+            target_zoom = zoom.scale() * (1 + direction * factor);
+        }
+        // reset the zoom level to 100%
+        if (direction === 0) {
+            target_zoom = 1;
+        }
+        // prevent zoom to exceed the extents (set to min/max in case)
+        if (target_zoom < extent[0]) {
+            target_zoom = extent[0];
+        }
+        else if (target_zoom > extent[1]) {
+            target_zoom = extent[1];
+        }
+
+
+        translate0 = [(center[0] - view.x) / view.k, (center[1] - view.y) / view.k];
+        view.k = target_zoom;
+        l = [translate0[0] * view.k + view.x, translate0[1] * view.k + view.y];
+
+        view.x += center[0] - l[0];
+        view.y += center[1] - l[1];
+
+        //interpolateZoom([view.x, view.y], view.k);
+    }
+    function zoomClick_for_set(direction) {
         var //clicked = d3.event.target,
             factor = ZOOMCLICK_FACTOR,
             center = [width / 2, height / 2],
@@ -408,19 +461,10 @@
         .attr('id', 'main_svg')
         .call(zoom);
 
-    var labels = svg
-        .append('g')
-        .attr('id', 'labels')
-        .style('opacity', '0.9');
 
     var labels_search = svg
         .append('g')
         .attr('id', 'labels_search')
-        .style('opacity', '0.9');
-
-    var path_rect = svg
-        .append('g')
-        .attr('id', 'path_rect')
         .style('opacity', '0.9');
 
 
@@ -437,7 +481,7 @@
         .style('cursor', 'pointer')
         .append('circle')
         .attr('class', function (d) {
-            return 'zoomable ' + d.category
+           return 'zoomable ' + d.category
         })
         .attr('id', function (d) {
             return d.id
@@ -448,7 +492,6 @@
         .attr('r', 4)
         .attr('transform', transform)
         .on('mouseover', function (d) {
-            //console.log(d);
             return show_sentiment_line(Array(d),'path_rect')
 
             //return show_label(Array(d), 'labels')
@@ -472,6 +515,14 @@
         .append('g')
         .attr('id', 'circles_lock')
         .style('opacity', '0.9');
+    var path_rect = svg
+        .append('g')
+        .attr('id', 'path_rect')
+        .style('opacity', '0.9')
+    var labels = svg
+        .append('g')
+        .attr('id', 'labels')
+        .style('opacity', '0.9');
 
 
      $('.ui.search')
@@ -487,7 +538,7 @@
           var auxtitle = result.id;
           var circle = document.getElementById(auxtitle);
           if (!checkVisible(circle)){
-            interpolateZoom([0, 0], 1);
+            //interpolateZoom([0, 0], 1);
           }
           point_click(result.title,result.id);
         },
@@ -514,7 +565,7 @@
             .attr('id', function (d) {
                 return d.id + '|text'
             })
-            .attr('fill', 'rgba(0,0,0,.6)')
+            .attr('fill', 'blue')
             .style('font-family', "Lato,'Helvetica Neue',Arial,Helvetica,sans-serif")
             .style('font-size', '11px')
             .style('font-weight', 'bold')
@@ -524,7 +575,7 @@
 
         one_label.insert('rect', ':first-child')
             .attr('class', 'zoomable_rect')
-            .attr('fill', '#e8e8e8')
+            .attr('fill', 'white')
             .attr('width', function (d) {
                 return document.getElementById(d.id + '|text').getBBox().width + 14
             })
@@ -533,26 +584,17 @@
             .attr('ry', 4)
             .attr('transform', transform_rect);
 
-        one_label.insert('rect', ':first-child')
-            .attr('class', 'zoomable_romb')
-            .attr('fill', '#e8e8e8')
-            .attr('width', 8)
-            .attr('height', 8)
-            .attr('rx', 1)
-            .attr('ry', 1)
-            .attr('transform', transform_romb);
-
         glabels.style('opacity', '0').transition().duration(300).style('opacity', '0.9');
 
     }
 
 
     function zoomIn() {
-        zoomClick(1);
+        zoomClick_for_set(1);
     }
 
     function zoomOut() {
-        zoomClick(-1);
+        zoomClick_for_set(-1);
     }
 
     function zoomReset() {
@@ -596,9 +638,8 @@
 
     function point_click(artist_name,id) {
         show_highlight(element_dict[artist_name]);
-        //show_label(Array(element_dict[artist_name]), 'labels_search');
+        show_sentiment_line(Array(element_dict[artist_name]), 'path_rect')
         create_show_sidebar(artist_name,id);
-        //show_sentiment_line(Array(element_dict[artist_name]), 'path_rect')
     }
 
     function create_show_sidebar(artist_name,id) {
@@ -607,20 +648,17 @@
             .sidebar('setting', 'dimPage', false)
             .sidebar('setting', 'closable', false)
             .sidebar('show');
-        //$('#sidebar_header_text').text(artist_name);
-        //$('#sidebar_lastfm').attr('href', 'http://www.last.fm/music/' + artist_name.replace(/ /g, '+'));
-        //$('#sidebar_lastfm').attr('target', '_blank');
-        //$('#sidebar_lastfm').text(artist_name);
         get_recommend_sidebar(artist_name, id);
         $('#emotion_range').range({
             min: 0,
-            max: 0.3,
+            max: 0.5,
             start: 0.05,
-            step:0.01,
+            step:0.02,
             onChange: function (val) {
                 RangeValue = val;
-                //console.log(RangeValue);
-                change_recommend_movie(RangeValue,artist_name)
+                if (typeof change_recommend_movie_yes !== "undefined")
+                {change_recommend_movie_yes(RangeValue,artist_name)}
+                else {change_recommend_movie(RangeValue,artist_name)}
             }
         });
     }
@@ -638,29 +676,6 @@
                 for (j = 0; j < recommend_title_list.length; j++) {
                     extract(recommend_title_list[j], recommend_id_list[j]);
                 }
-                /*enclosing_points = []
-                for (j = 0; j < recommend_title_list.length; j++) {
-                    for (i = 0; i < data1.length; i++) {
-                        if (data1[i].id == recommend_id_list[j]) {
-                            enclosing_points.push({x:data1[i].x, y:data1[i].y});
-                        }
-                    }
-                }
-
-                var new_enclosing_circle = makeCircle(enclosing_points);
-                var enclosing = svg.select('#enclosing_circle');
-                enclosing.selectAll('*').remove();
-                var group_tem = enclosing.selectAll('*').data(Array(new_enclosing_circle)).enter();
-                var enclose = group_tem.insert('circle', ':first-child')
-                    .attr('class', 'zoomable')
-                    .attr('id', '#enclosing_circle')
-                    .attr("r", new_enclosing_circle.r)
-                    .attr('x', enclosing_points.x)
-                    .attr('y', enclosing_points.y)
-
-                    .style("fill", 'blue')
-
-*/
 
             }
 
@@ -677,21 +692,6 @@
         }
 
 }
-function find_line_point(id){
-         $.ajax({
-             type: 'GET',
-             url: '/find_line_points',
-             data: {'id': id},
-             dataType: 'json',
-             success: function (data) {
-                 line_points = data.line_points;
-                 //console.log(line_points);
-
-             }
-
-         });
-          return line_points;
-}
 
 
     function show_sentiment_line(d, id_g) {
@@ -701,13 +701,11 @@ function find_line_point(id){
 
         var one_path_rect = group
             .append('g')
-            //.on('mouseover', (d) => d3.select(this).style("cursor", "pointer"))
             .style('cursor', 'pointer')
-            //.on('click', (d) => draw_rect(d.name)
 
-        one_path_rect.insert('rect', ':first-child')
+        one_path_rect.append('rect', ':last-child')
             .attr('class', 'zoomable_rect')
-            .attr('fill', '#0A0A0A')
+            .attr('fill', '#ffffff')
             .attr('width', 200)
             .attr('height', 200)
             .attr('rx', 10)
@@ -716,7 +714,6 @@ function find_line_point(id){
         glabels.style('opacity', '0').transition().duration(300).style('opacity', '1');
 
         var choose_path_point=find_id(d[0].id);
-        //console.log(choose_path_point)
 
         var xScaleLine = d3.scale.linear()
             .range([x(d[0].x), x(d[0].x) + 200])
@@ -735,7 +732,7 @@ function find_line_point(id){
             .y(function (d) {
                 return (yScaleLine(d.point));
             })
-        .interpolate("basis");
+            .interpolate("basis");
 
 
 
@@ -746,7 +743,6 @@ function find_line_point(id){
             .attr("stroke", "blue")
             .attr("stroke-width", 2)
             .attr("fill","none")
-
     }
 
 
@@ -791,7 +787,6 @@ function find_line_point(id){
 
    function extract(title,id){
         omdb_url = "http://www.omdbapi.com/?i=tt3896198&apikey=ecdad4ed&t=";
-       //omdb_url = "http://www.omdbapi.com/?i=tt3896198&apikey=cda6674a&t=";
     $.ajax({
              type: 'GET',
              url: omdb_url + title,
@@ -799,6 +794,18 @@ function find_line_point(id){
 
              success: function (data) {
                  $('#recommend_content').append(recommendMovieDataTpl(data,id));
+             }
+         })
+     };
+   function extract_yes(title,id){
+        omdb_url = "http://www.omdbapi.com/?i=tt3896198&apikey=ecdad4ed&t=";
+    $.ajax({
+             type: 'GET',
+             url: omdb_url + title,
+             dataType: 'json',
+
+             success: function (data) {
+                 $('#recommend_content_yes').append(recommendMovieDataTpl(data,id));
              }
          })
      };
@@ -818,25 +825,8 @@ function find_line_point(id){
              }
          })
 
-         /*$.ajax({
-             type: 'GET',
-             url: '/recommend',
-             data: {'movie': title},
-             dataType: 'json',
-             success: function (data) {
-                 recommend_title_list = data.recMovieTitle;
-                 recommend_id_list=data.recMovieId;
-                 console.log(recommend_title_list);
-                 for (j = 0; j < recommend_title_list.length; j++) {
-                     console.log(recommend_title_list[j]);
-                     console.log (recommend_id_list[j]);
-                     extract(recommend_title_list[j],recommend_id_list[j]);
-                 }
-             }
-         });*/
      }
 </script>
-
 
 </html>
 

@@ -26,7 +26,6 @@ def user_login_req(f):
         if "user" not in session:
             return redirect(url_for("home.login", next=request.url))
         return f(*args, **kwargs)
-
     return decorated_function
 
 
@@ -39,21 +38,7 @@ def change_filename(filename):
                str(uuid.uuid4().hex) + fileinfo[-1]
     return filename
 
-@home.route("/test/", methods=["GET"])
-def test():
-    return render_template("home/test.html")
 
-
-@home.route("/link/", methods=["GET"])
-def link():
-    d2 = pd.read_csv('static/link/sentiment_2d.csv')
-    line = pd.read_csv('static/link/sentiment_line.csv')
-    d2_data = d2.to_dict(orient='records')
-    line_data=line.to_dict(orient='records')
-    d2_data = json.dumps(d2_data, indent=4)
-    line_data=json.dumps(line_data, indent=4)
-    data = {'scatter_data': d2_data,'line_data':line_data};
-    return render_template("home/linked.html",data=data)
 
 
 @home.route("/<int:page>/", methods=["GET"])
@@ -115,6 +100,8 @@ def change_recommend_movie_yes():
         range_values = request.args.get("range_value", '0.05'),
         range_value = float(range_values[0])
         user_id = request.args.get("user_id", 'a')
+        print (user_id)
+        print(type(user_id))
         movie_name = request.args.get("title", 'a'),
         movie_name = movie_name[0]
         with open('static/mood/movie_name2sentiment_sim_index.pkl', 'rb') as f:
@@ -122,7 +109,7 @@ def change_recommend_movie_yes():
         movieIndex_in_sentimentMatrix=movie_name2sentiment_sim_index[movie_name]
         import turicreate as tc
         matrix_fac_model=tc.load_model('static/models/turi_matrix_factorization_model')
-        recommend_by_maxtrixFac = matrix_fac_model.recommend(users=[user_id], k=200)
+        recommend_by_maxtrixFac = matrix_fac_model.recommend(users=[user_id], k=300)
         recommend_movieID_by_maxtrixFac=recommend_by_maxtrixFac['movieId']
         recommend_score_by_maxtrixFac=recommend_by_maxtrixFac['score']
         movies = pd.read_pickle('static/mood/movies.pkl')
@@ -135,7 +122,7 @@ def change_recommend_movie_yes():
                 recommend_title_by_maxtrixFac += (sel['title_without_year'].values.tolist());
                 sel_recommend_score_by_maxtrixFac.append(recommend_score_by_maxtrixFac[i])
                 sel_recommend_movieID_by_maxtrixFac.append(recommend_movieID_by_maxtrixFac[i])
-
+        print(recommend_title_by_maxtrixFac)
         with open('static/mood/movie_name2sentiment_sim_index.pkl', 'rb') as f:
             movie_name2sentiment_sim_index = pickle.load(f, encoding='latin1')
         recommend_index_in_sentiment = [movie_name2sentiment_sim_index[i] for i in recommend_title_by_maxtrixFac]
@@ -143,14 +130,13 @@ def change_recommend_movie_yes():
         sentiment_similarities = np.asarray([sentiment_sim_Matrix[movieIndex_in_sentimentMatrix][j] if (
         j < len(sentiment_sim_Matrix) and movieIndex_in_sentimentMatrix < len(sentiment_sim_Matrix)) else 0 for j in
                                              recommend_index_in_sentiment])
-        total_similarities = np.array(sel_recommend_score_by_maxtrixFac)*(1-range_value) + sentiment_similarities * range_value
+        total_similarities = np.array(sel_recommend_score_by_maxtrixFac) + sentiment_similarities * 5*range_value
         select_index=np.argsort(total_similarities)[::-1][:8]
         print(select_index)
         final_id=[sel_recommend_movieID_by_maxtrixFac[i] for i in select_index]
         final_title=[recommend_title_by_maxtrixFac[i] for i in select_index]
         data = {"recMovieTitle": final_title, "recMovieId": final_id}
         print(final_title)
-        print(final_id)
         return json.dumps(data, indent=4)
 
 
@@ -215,33 +201,13 @@ def player(id=None, page=None):
         movie.commentnum = movie.commentnum + 1
         db.session.add(movie)
         db.session.commit()
-        flash("添加评论成功！", "ok")
-        return redirect(url_for('home.play', id=movie.id, page=1))
+        flash("Added The Review successfully ！", "ok")
+        return redirect(url_for('home.player', id=movie.id, page=1))
     # 放在后面避免添加评论播放量涨2
     movie.playnum = movie.playnum + 1
     db.session.add(movie)
     db.session.commit()
     return render_template("home/player.html",movie=movie, form=form, page_data=page_data)
-
-
-
-@home.route("/find_line_points", methods=["GET"])
-def find_line_points():
-    if request.method == "GET":
-        movie_name =request.args.get("id",'a'),
-        movie_name=movie_name[0]
-        #print(movie_name)
-        with open('static/mood/sentiment_line.pkl', 'rb') as f:
-            sentiment_line = pickle.load(f, encoding='latin1')
-            points=sentiment_line[movie_name]
-            #print(points)
-            data={"line_points":points}
-    return json.dumps(data,indent=4)
-
-
-
-
-
 
 
 @home.route("/login/", methods=["GET", "POST"])
@@ -252,12 +218,12 @@ def login():
         user = User.query.filter_by(email=data['email']).first()
         if user:
             if not user.check_pwd(data['pwd']):
-                flash("password is wrong", "err")
+                flash("Wrong Password", "err")
                 return redirect(url_for("home.login"))
         else:
             flash("Email does not exist！", "err")
             return redirect(url_for("home.login"))
-        session['user'] = user.name
+        session['user'] = user.email
         session['user_id'] = user.id
         userlog = Userlog(
             user_id=user.id,
@@ -282,15 +248,13 @@ def regist():
     if form.validate_on_submit():
         data = form.data
         user = User(
-            name=data['name'],
             email=data['email'],
-            phone=data['phone'],
             pwd=generate_password_hash(data["pwd"]),
             uuid=uuid.uuid4().hex
         )
         db.session.add(user)
         db.session.commit()
-        flash("register successfully !", 'ok')
+        flash("Registered successfully !", 'ok')
 
     return render_template("home/regist.html", form=form)
 
@@ -299,6 +263,7 @@ def regist():
 @home.route("/user/", methods=["GET", "POST"])
 def user():
     form = UserdetailForm()
+    print(session['user_id'])
     user = User.query.get(int(session['user_id']))
     form.face.validators = []
     if request.method == "GET":
@@ -318,13 +283,13 @@ def user():
 
         email_count = User.query.filter_by(email=data["email"]).count()
         if data["email"] != user.email and email_count == 1:
-            flash("邮箱已经存在!", "err")
+            flash("This Email Already Exists!", "err")
             return redirect(url_for("home.user"))
         user.email = data["email"]
         user.info = data["info"]
         db.session.add(user)
         db.session.commit()
-        flash("修改成功!", "ok")
+        flash("Changed It successfully!", "ok")
         return redirect(url_for("home.user"))
     return render_template("home/user.html", form=form, user=user)
 
@@ -340,12 +305,12 @@ def pwd():
         data = form.data
         user = User.query.filter_by(name=session["user"]).first()
         if not user.check_pwd(data["old_pwd"]):
-            flash("旧密码错误！", "err")
+            flash("Old Password Wrong！", "err")
             return redirect(url_for('home.pwd'))
         user.pwd = generate_password_hash(data["new_pwd"])
         db.session.add(user)
         db.session.commit()
-        flash("修改密码成功，请重新登录！", "ok")
+        flash("Changed successfully ，Log in Again！", "ok")
         return redirect(url_for('home.logout'))
     return render_template("home/pwd.html", form=form)
 
@@ -506,6 +471,9 @@ def search(page=None):
     return render_template("home/search.html", movie_count=movie_count, key=key, page_data=page_data)
 
 
-@home.route("/AboutDylana", methods=["GET", "POST"])
+@home.route("/AboutDylana", methods=["GET"])
 def AboutDylana():
     return render_template("home/AboutDylana.html")
+@home.route("/AboutProject", methods=["GET"])
+def AboutProject():
+    return render_template("home/AboutProject.html")
