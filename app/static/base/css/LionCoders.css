@@ -26,17 +26,22 @@
 	8. CONTENT BLOCKS
 	9. RESPONSIVE
 
+
+
+
 -------------------------------------------------------------------*/
 
 /* -------------------------
         0. standard
 ------------------------- */
+
 body {
     font: 400 14px 'Raleway', sans-serif;
     -webkit-font-smoothing: antialiased;
     line-height: 30px;
     color: #19334d;
     overflow-x: hidden;
+    background-color: #4d4d4d;
 }
 .music {
     width: 0;
@@ -464,18 +469,20 @@ h2.menu-item:hover:after {
 }
 
 .social {
-    position: absolute;
-    bottom: 15%;
+
 }
 
 .social li {
     display: inline-block;
     text-align: center;
+    width: 55px;
+    height: 55px;
+    padding:10px;
 }
 
 .social a {
-    border: 2px solid #4d4d4d;;
-    color: #4d4d4d;
+    border: 2px solid white;;
+    color: white;
     display: inline-block;
     height: 35px;
     width: 35px;
@@ -488,10 +495,30 @@ h2.menu-item:hover:after {
 }
 
 .social a:hover {
-    border: 2px solid #4d4d4d;
-    color: #4d4d4d;
+    border: 2px solid #19334d;
+    color: #19334d;
 }
+.info_me {
+        display: inline;
+        margin-right: 20px;
+        text-align: center;
+        width: 35px;
+        height: 35px;
+        margin-top: 10px;
+    }
 
+    .info_me a {
+        border: 2px solid #4d4d4d;;
+        color: #4d4d4d;
+        display: inline-block;
+        height: 35px;
+        width: 35px;
+    }
+
+    .info_me a:hover {
+        border: 2px solid #4d4d4d;
+        color: #ffffff;
+    }
 
 /* -------------------------
         4. ABOUT BLOCK
@@ -1801,7 +1828,7 @@ ul.info-list li strong {
 	.name-block,
 	.about-block,
 	.portfolio-block,
-	.blog-block,
+	.blog-block,showx
 	.contact-block {
         position: relative;
         -ms-transform: rotate(0deg);
@@ -1904,3 +1931,4 @@ ul.info-list li strong {
 		width: 100%;
     }
 }
+/* customed */

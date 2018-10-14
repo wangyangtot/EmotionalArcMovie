@@ -477,3 +477,6 @@ def AboutDylana():
 @home.route("/AboutProject", methods=["GET"])
 def AboutProject():
     return render_template("home/AboutProject.html")
+@home.route("/dylanawang", methods=["GET"])
+def dylanawang():
+    return render_template("home/dylanawang.html")

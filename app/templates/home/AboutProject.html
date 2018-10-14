@@ -110,7 +110,7 @@ div.highlighter-rouge, figure.highlight {
     <P>Winding back the clock to four month ago when I finished watching consecutive three movies.Their plots are
         of huge discrepancy,but initial appetite for movies seems have been sloughed off. "so what's going on?", after
         asking myself this question several times, I realized it was the same pattern of emotional
-        journey that made me lost the interest: start with the hero in the valley,then he went through a long way of
+        journey that made me lost the interest: the hero start with in the valley,then struggled through a long way of
         difficulties,eventually steped up
         to the peak.
     </P>
@@ -124,7 +124,8 @@ div.highlighter-rouge, figure.highlight {
         computational narratology have
         been
         significantly
-        advanced the sentiment analysis of storytelling.Besides,Kurt Vonnegut has coined the term "emotional arc"
+        advanced the sentiment analysis of storytelling.Besides,Kurt Vonnegut <a href="#ref"><sup>[1]</sup></a> has
+        coined the term "emotional arc"
         of a story and visualized it in a two-dimensional space, defining it as a correspondence between the timing of
         the
         story ("Beginning-End") displayed on a horizontal axes, and its emotional journey ("
@@ -134,7 +135,7 @@ div.highlighter-rouge, figure.highlight {
         Vermont who used the NLP methodology to map emotional journeys of a filtered dataset consisting of 1,327 novels
         from
         Project Gutenberg's digital fiction collection and identified 6 emotional arcs which describe all those
-        stories (Reagan et al., 2016). They showed that all analyzed novels could be partitioned into 6
+        stories<a href="#ref"><sup>[2]</sup></a>. They showed that all analyzed novels could be partitioned into 6
         clusters where each cluster represents a specific emotional trajectory:</p>
     <div class="highlighter-rouge">
         <ul>
@@ -151,7 +152,7 @@ div.highlighter-rouge, figure.highlight {
     <p>
         In addition,MIT Media Lab applied deep convolutional neural networks for audio and visual sentiment analysis,
         proving the emotional arcs can represent macroscopic aspects of a video story and affect the viewer's
-        engagement.
+        engagement.<a href="#ref"><sup>[3]</sup></a>
 
     </p>
     <P>
@@ -186,9 +187,9 @@ div.highlighter-rouge, figure.highlight {
     <div class="highlighter-rouge">
         <ul>
             <li><b>Front End:</b> a Flask powered web page</li>
-            <li><b>Recommendation Engine</b> with two different recommending approaches:
+            <li><b>Recommendation Engine</b> with three different recommending approaches:
                 <ul>
-                    <li>Natural Language Processing (NLP) and Discrete Cosine Transform (DCT) for sentiment trajectory
+                    <li>Natural Language Processing (NLP) for sentiment trajectory
                     </li>
                     <li>Content Based: The GENOME cosine similarity for solving cold start problem</li>
                     <li>Collaborative Filtering: Matrix Factorization algorithm</li>
@@ -205,8 +206,8 @@ div.highlighter-rouge, figure.highlight {
     <h3>4. Data Storage and Access Strategy</h3>
     <p>Since the app have a huge amount of movie data and user information,storing them in a relational database would
         provide scalability of the system and efficient access for data.</p>
-    <p><a href="https://www.mysql.com/" target="_blank">MySQL</a> provide many advantages for my recommendation
-        app.First, It allowed me to easily establish a connection via sqlalchemy and MySQLdb to Python and Flask,
+    <p><a href="https://www.mysql.com/" target="_blank">MySQL</a> works well.First, It allowed me to easily establish a
+        connection via sqlalchemy and MySQLdb to Python and Flask,
         thereby
         making
         it unnecessary to create multiple intermediate/temporary csv files.
@@ -214,14 +215,14 @@ div.highlighter-rouge, figure.highlight {
         data files contained millions of rows,
         so
         I spun up the MySQL instance and loaded each dataset into separate tables.This made data fetch easy and fast.
-        Basiclly, four tables were created,
+        Basiclly, four tables were created:
         movie,user,rating,reviews</p>
     <p>A visualization of schema as follow:</p>
     <img src="{{url_for('static',filename='pig/schema.png')}}" height="500" width="700" alt="schema">
     <h3>
         5. The Hybrid Recommender Engine</h3>
     <h5>5.1 Natural Language Processing (NLP) of movie scripts</h5>
-    <p>To begin With,I scraped full-length movie
+    <p>To deal with the movie scripts, I initially scraped full-length movie
         scripts from <a href="https://www.imsdb.com/" target="_blank">IMSDB</a>,But it contains only approximate 1000
         scripts,so I continue
         extracting from <a href="https://www.springfieldspringfield.co.uk/movie_scripts.php"
@@ -241,34 +242,38 @@ div.highlighter-rouge, figure.highlight {
         each script was partitioned into sentences and for each sentence the valence was calculated by assigning every
         word
         its sentimental value &delta; &isin; ( -1,1), where -1 referred to emotionally negative terms; and 1 referred to
-        emotionally positive terms according to the lexicon. Second,I applies three smoothing methods which
-        include a moving average, loess, and Discrete Cosine Transform (DCT)
+        emotionally positive terms according to the lexicon<a href="#ref"><sup>[4]</sup></a>. Second,I applies three
+        smoothing methods which
+        include a moving average<a href="#ref"><sup>[5]</sup></a>, Loess((Locally Weighted Scatterplot Smoothing)<a
+                href="#ref"><sup>[6]</sup></a>, and Discrete Cosine Transform (DCT)<a href="#ref"><sup>[7]</sup></a>
         to smooth
         the
         trajectory. Third, the resulting trajectory was uniformly sub-sampled to have 100 points so that each script
         sentiment arc could be represented using the scrpts timing from 0% (beginning of the movie) to 100% (end of the
         movie).</p>
-    <P> Then,I collected all emotional arcs from scripts and carried out the k-means algorithm for partitioned to fit 6
+    <P> Then,I collected all emotional arcs from scripts and carried out the k-means algorithm<a
+            href="#ref"><sup>[8]</sup></a> for partitioning to fit 6
         major
         emotional trajectories (clusters) in which distances were calculated by approximating the &#8467<sub>2</sub>
-        metric.the
+        metric<a href="#ref"><sup>[9]</sup></a>.the
         fig shows all 6 clusters of emotional trajectories and provides examples of movies which fall within each
         cluster.
     </p>
-    <img src="{{url_for('static',filename='pig/script_pro.png')}}" height="600" width="400"
+    <img src="{{url_for('static',filename='pig/script_pro.png')}}" height="400" width="800"
          alt="script process">
     <div class="caption">
         Steps of scripts Analysis
     </div>
 
-    <p>Finally, to determine how similar two emotion arcs are, I calculated the cosine similarity between any two of
+    <p>Finally, to determine how similar two emotion arcs are, I calculated the cosine similarity<a href="#ref"><sup>[10]</sup></a>
+        between any two of
         movies.Mathematically, Cosine similarity is a measure of similarity between two non-zero vectors of an inner
         product
         space that measures the cosine of the angle between them. The smaller the angle, the
         closer to 1 the value becomes,the more similar the words.</p>
-    <h5>5.2 Recommendation System Algorithms</h5>
+    <h5>5.2 Recommendation System Algorithms<a href="#ref"><sup>[11]</sup></a></h5>
     <p>Recommendation systems seeks to predict the "rating" or "preference" a user would give to an item and have become
-        increasingly popular in recent years. Recommender system divided into three different architectures:</p>
+        increasingly popular in recent years. Recommender system is divided into three different architectures:</p>
     <div class="highlighter-rouge">
         <ul>
             <li>Popularity Based Recommender Make the same recommendation to every user, based on the popularity of an
@@ -295,9 +300,10 @@ div.highlighter-rouge, figure.highlight {
             </li>
         </ul>
     </div>
-    <p>In this project, I implemented Matrix Factorization algorithm for registered users and Content-Based Recommender
+    <p>In this project, I implemented Matrix Factorization algorithm< for registered
+        users and Content-Based Recommender
         for unregistered users. </p>
-    <h6>5.2.1 Collaborative Filtering: Matrix Factorization algorithm</h6>
+    <h6>5.2.1 Collaborative Filtering: Matrix Factorization algorithma href="#ref"><sup>[12]</sup></a></h6>
     <p>Collaborative filtering (CF) is commonly used for recommender systems. In collaborative filtering by matrix
         factorization method, the algorithm makes use of ratings submitted by users, and automatically learns latent
         representations for users as well as movies.</p>
@@ -319,14 +325,15 @@ div.highlighter-rouge, figure.highlight {
         or interpret.so I have to tried differeent number of later factors to find the&nbsp;</p>
     <p>vector values will be optimized by minimizing the discrepancy between predicted and actual ratings in the
         training
-        set. The optimization problem is:</p>
+        set. The cost fuction to optimizatized is:</p>
     $$L=\min_{U,X}\sum_{i,j}(y_{i,j}-U_iX_j^T)^2+\lambda(\sum_i \Vert U_i\Vert^2+ \sum_j \Vert X_j\Vert^2)$$
 
     <p>The first term measures the squared error between the actual and predicted ratings, and the second term is a the
         regularization term.</p>
-    <p>I optimized the model parameters using the algorithm of Alternating Least Squares (ALS). It first fixes U and
+    <p>I optimized the model parameters using the algorithm of Alternating Least Squares (ALS)<a
+            href="#ref"><sup>[13]</sup></a>. It first fixes U and
         optimizes X, then fixes X and optimizes U, and repeats until convergence.</p>
-    <P> the analytical solutions to the least squares problem as folllow: [1]</P>
+    <P> The analytical solutions to the least squares problem as folllow:</P>
     $$U_i= (\sum_{j} X_j X_j^T + \lambda I_k)^{-1} \sum_{j} y_{i,j} X_j \quad (1)$$
     $$X_j = (\sum_{i} U_i U_i^T + \lambda I_k)^{-1} \sum_{i} y_{i,j} U_i \quad (2)$$
     <p>
@@ -344,18 +351,20 @@ div.highlighter-rouge, figure.highlight {
         constantly getting smarter about what matters most to every user. However, it presents the cold start problem,
         an
         issue that arises for a brand-new user who has no rating history.To combat this,I build the content-based
-        recommendation using movie genome which has been used in <a href="http://www.jinni.com/discovery/"
-                                                                    target="_blank">
-            Jinni</a>.Movie
-        genome is a taxonomy of thousands of descriptive tags created by analyzing all movies'a available descriptions,
+        recommendation<a href="#ref"><sup>[14]</sup></a> using movie genome which has already been used in <a
+                href="http://www.jinni.com/discovery/"
+                target="_blank">
+            Jinni </a>and made a huge commerial success.Movie
+        genome is a taxonomy of thousands of descriptive tags created by analyzing all movies' available descriptions,
         reviews and meta-data.</p>
     <img src="{{url_for('static',filename='pig/content-based.png')}}" height="400" width="500" alt="content-based">
     <div class="caption">
         Content-based filtering recommendation engine
     </div>
-    <p>Every movie's genome was obtained from <a href="https://grouplens.org/datasets/movielens/" target="_blank">
-        MovieLens</a>.Then
-        carried out the Word2Vec to translates each movie genome into a vector of 1100 features. Then cosine similarity
+    <p> After obtained movie's genome from <a href="https://grouplens.org/datasets/movielens/" target="_blank">
+        MovieLens</a>,I
+        carried out the Word2Vec<a href="#ref"><sup>[15]</sup></a> to translates each movie genome into a vector of 1100
+        features. Then cosine similarity
         was
         conducted to calculate the similarities between two movies and save to server for fetching when engine meet new
         users. </p>
@@ -366,7 +375,7 @@ div.highlighter-rouge, figure.highlight {
         select top-N most similar movies based on precomputed genome similarity data as canditates;for registered
         user,the
         recommender engine boosted up the maxtrix factoring collaborative filtering model to select top-N movies as
-        candidates.Then among the candidate movies,user can adjust the influence of emothinal arc similarities which is
+        candidates.Then among all candidate movies,user can adjust the influence of emothinal arc similarities which is
         pre-storred in the server to decide their final recommendation.The stronger the motional arc influence, the more
         we
         rely on emotional arc similarities and vice-versa.</p>
@@ -376,28 +385,41 @@ div.highlighter-rouge, figure.highlight {
     <div class="highlighter-rouge">
         <ul>
             <li>interactive main interface</li>
-            <li>pages for displaying meta information and playing the trilar of movies</li>
+            <li>movie pages for displaying movie meta-data and playing the trailer of movies</li>
             <li>user account page for display user's basic information and their rated movie ans reviews</li>
         </ul>
     </div>
     <p>The main user interface of my recommendation engine consists of three sections: input, visualization and a
-        recommendation panel whose design follows Shneiderman's visual information seeking mantra [41] by providing an
+        recommendation panel whose design follows Shneiderman's "Eight Golden Rules of Interface Design"<a
+                href="#ref"><sup>[16]</sup></a> by
+        providing an
         overview, allowing zooming and panning the visualization, allowing filtering based on mood categories and
         toggling
         the visibility of details. Recommended movie posters are displayed as a list in the right panel by utilizing <a
                 href="http://www.omdbapi.com/" target="_blank">OMDB API </a>and the corresponding movie nodes are
         highlighted within the
-        visualization.a slider control was provided to allow users to adjust the sentiment influence which dynamically
+        visualization.A slider control was provided to allow users to adjust the sentiment influence which dynamically
         calculate recommendations movies. Upon clicking on names of the recommended movies, users are redirected to
-        embedded
-        youtube video player page where they can watch the trailer of recommended movies supported by <a
+        movie pages which
+        embeds
+        youtube video player to watch the trailer of recommended movies supported by <a
                 href="https://developers.google.com/youtube/v3/docs/videos" target="_blank">Youtube API</a> and some
         meta-data.In
-        Addition,logined-in user can also rate the movies by clicking on the stars or write some reviews to provide
+        Addition,registered user can also rate the movies by clicking on the stars or write some reviews to provide
         feedback
         and obtain smarter recommendation.</p>
     <p>&nbsp;</p>
     <h3>8.Limitations And Future Improvement </h3>
+    <ol>
+        <li>Imporved scalability of the recommder.since I put the simlarities matrix in a static file cause the problem
+            when I add the new movie.
+        </li>
+        <LI>Storing the unstructured data like user's avatar</LI>
+        <li>need a fast and general engine for large-scale data processing like spark</li>
+        <li> test the user's statis</li>
+        <LI>utilize user's review,extract some useful information</LI>
+        <li>A/B test for user </li>
+    </ol>
     <H3>9.Tools and Packages used
     </h3>
     <div class="highlighter-rouge">
@@ -458,6 +480,61 @@ div.highlighter-rouge, figure.highlight {
         </div>
     </div>
     <h3>Reference</h3>
+    <ol id="ref">
+        <li><a href="https://www.goodreads.com/book/show/9602.Palm_Sunday" target="_blank"> Palm Sunday.
+            RosettaBooks LLC,K. Vonnegut. New
+            York, 1981.</a>
+        </li>
+        <li id="ref-2"><a href="https://arxiv.org/abs/1606.07772" target="_blank">
+            The emotional arcs of stories are
+            dominated by six basic shapes.Andrew J. Reagan.arXiv:1606.07772,2016.
+        </a></li>
+        <li><a href="https://arxiv.org/abs/1712.02896" target="_blank">
+            Audio-Visual Sentiment Analysis for Learning
+            Emotional Arcs in Movies.Eric Chu.arXiv:1712.02896,2017.
+        </a></li>
+        <li><a href="https://www.mitpressjournals.org/doi/pdf/10.1162/COLI_a_00049" target="_blank">Lexicon-Based
+            Methods for Sentiment
+            Analysis.Maite
+            Taboada..Computational Linguistics,2010.</a></li>
+        <li><a href="https://en.wikipedia.org/wiki/Moving_average" target="_blank">Moving Average.Wikipedia.</a></li>
+        <li><a href="https://www.tandfonline.com/doi/abs/10.1080/01621459.1979.10481038" target="_blank">
+            locally weighted regression and smoothing scatterplots,Cleveland, W.
+            S. Robust. J. Amer. Statist. Assoc,1979</a></LI>
+        <li><a href="http://www.lokminglui.com/DCT_TR802.pdf" target="_blank">The Discrete Cosine
+            Transform (DCT):Theory
+            and
+            Application.Syed Ali Khayam.Information Theory and Coding,2013.</a></li>
+        <li><a href="https://dl.acm.org/citation.cfm?id=628801">An Efficient k-Means Clustering Algorithm: Analysis
+            and Implementation.Tapas Kanungo.EEE Transactions on Pattern Analysis and Machine Intelligence.2002.</a>
+        </li>
+        <li><a href="https://en.wikipedia.org/wiki/Lp_space" target="_blank">Lp space.Wikipedia</a></li>
+
+        <li><a href="https://en.wikipedia.org/wiki/Cosine_similarity" target="_blank">Cosine similarity.Wikipedia</a>
+        </li>
+        <li><a href="https://ieeexplore.ieee.org/document/8276182" target="_blank">A review on recommender
+            systems.L. Anitha..International Journal of Computer Applications,2013.</a>
+        </li>
+        <LI><a href="https://papers.nips.cc/paper/1861-algorithms-for-non-negative-matrix-factorization.pdf"
+               target="_blank">algorithms-for-non-negative-matrix-factorization.pdf.Daniel D. Lee.1861</a>
+        </LI>
+        <li><a href="https://stanford.edu/~rezab/classes/cme323/S15/notes/lec14.pdf" target="_blank">Matrix Completion
+            via Alternating
+            Least Square(ALS).stanford.edu.notes.</a></li>
+        <LI><a href="http://www.fxpal.com/publications/FXPAL-PR-06-383.pdf" target="_blank">Content-based Recommendation
+            Systems.Michael J. Pazzani1.</a></LI>
+        <LI><a href="https://arxiv.org/abs/1301.3781" target="_blank">
+            Efficient Estimation of Word Representations in Vector Space
+            Tomas Mikolov.Efficient Estimation of Word Representations in
+            Vector Space.arXiv:1301.3781.2013.
+        </a></LI>
+        <li><a href="https://faculty.washington.edu/jtenenbg/courses/360/f04/sessions/schneidermanGoldenRules.html"
+               target="_blank">Shneiderman's "Eight Golden Rules of Interface Design"
+
+        </a></li>
+
+    </ol>
+
 </div>
 
 
