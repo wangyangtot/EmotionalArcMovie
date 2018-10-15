@@ -11,27 +11,29 @@
     <link rel="stylesheet" href="{{url_for('static',filename='base/css/bootstrap.min.css')}}">
     <link rel="stylesheet" href="{{url_for('static',filename='base/css/bootstrap-movie.css')}}">
     <link rel="stylesheet" href="{{url_for('static',filename='base/css/animate.css')}}">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/semantic.min.css" type="text/css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/semantic.min.css" type="text/css"
+          rel="stylesheet"/>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='mood/range.css')}}">
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.css">
-
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/semantic.js"></script>
-    <script type="text/javascript"  src="{{ url_for('static',filename='mood/range.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static',filename='mood/range.js')}}"></script>
 
     <style>
-        .navbar-brand>img {
+        .navbar-brand > img {
             display: inline;
         }
-          .media{
-            padding:3px;
-            border:1px solid #ccc
+
+        .media {
+            padding: 3px;
+            border: 1px solid #ccc
         }
     </style>
-    {%block css %}{%  endblock%}
+    {%block css %}{% endblock%}
 </head>
 
-<body style="margin-top:76px;">
+<body style="margin-top:76px;background-color:#4d4d4d !important;height:10%">
 <!--导航-->
 <nav class="navbar navbar-default navbar-fixed-top" style="background-color:#4d4d4d !important;height:10%">
     <div class="container">
@@ -42,7 +44,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-           <a href="{{url_for('home.mood')}}" class="navbar-brand" style="width:400px;color:#faf8e9">
+            <a href="{{url_for('home.mood')}}" class="navbar-brand" style="width:400px;color:#faf8e9">
                 <img src="{{url_for('static',filename='base/images/sentiment_logo.png')}}" style="height:40px;">&nbsp;EmotionalArcMovie
             </a>
         </div>
@@ -50,37 +52,47 @@
         <!--导航-->
         <div class="navbar-collapse collapse">
 
-            <ul class="nav navbar-nav navbar-right" >
-                <li >
-                    <a style="background-color: #4d4d4d !important;color:#faf8e9" class="curlink" href="{{url_for('home.mood')}}"> <span class="glyphicon glyphicon-film"></span>&nbsp;Movie</a>
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a style="background-color: #4d4d4d !important;color:#faf8e9" class="curlink"
+                       href="{{url_for('home.mood')}}"> <span class="glyphicon glyphicon-film"></span>&nbsp;Movie</a>
                 </li>
                 <li>
-                    <a style="background-color: #4d4d4d !important;color:#faf8e9"class="curlink" href="{{url_for('home.login')}}"><span class="glyphicon glyphicon-log-in"></span>&nbsp;Login</a>
+                    <a style="background-color: #4d4d4d !important;color:#faf8e9" class="curlink"
+                       href="{{url_for('home.login')}}"><span class="glyphicon glyphicon-log-in"></span>&nbsp;Login</a>
                 </li>
                 <li>
-                    <a style="background-color: #4d4d4d !important;color:#faf8e9" class="curlink" href="{{url_for('home.regist')}}"><span class="glyphicon glyphicon-plus"></span>&nbsp;Register</a>
+                    <a style="background-color: #4d4d4d !important;color:#faf8e9" class="curlink"
+                       href="{{url_for('home.regist')}}"><span
+                            class="glyphicon glyphicon-plus"></span>&nbsp;Register</a>
                 </li>
                 <li>
-                    <a style="background-color: #4d4d4d !important;color:#faf8e9" class="curlink" href="{{url_for('home.logout')}}"><span class="glyphicon glyphicon-log-out"></span>&nbsp;Logout</a>
+                    <a style="background-color: #4d4d4d !important;color:#faf8e9" class="curlink"
+                       href="{{url_for('home.logout')}}"><span
+                            class="glyphicon glyphicon-log-out"></span>&nbsp;Logout</a>
                 </li>
                 <li>
-                    <a style="background-color: #4d4d4d !important;color:#faf8e9" class="curlink" href="{{url_for('home.user')}}"><span class="glyphicon glyphicon-user"></span> Account</a>
+                    <a style="background-color: #4d4d4d !important;color:#faf8e9" class="curlink"
+                       href="{{url_for('home.user')}}"><span class="glyphicon glyphicon-user"></span> Account</a>
                 </li>
                 <li>
                     <a style="background-color: #4d4d4d !important;color:#faf8e9" data-toggle="collapse"
                        href="#multiCollapseExample1"><span class="glyphicon  glyphicon-th-list"></span> About</a>
-                    <ul style="background-color: #4d4d4d !important;color:#faf8e9;" class="collapse multi-collapse" id="multiCollapseExample1">
-                        <li> <a target='_blank' href="{{url_for('home.AboutProject')}}"> <strong>The Project</strong></a></li>
-                        <li><a target='_blank' href="{{url_for('home.AboutDylana')}}"><strong>The Contributor</strong></a></li>
+                    <ul style="background-color: #4d4d4d !important;color:#faf8e9;" class="collapse multi-collapse"
+                        id="multiCollapseExample1">
+                        <li><a target='_blank' href="{{url_for('home.AboutProject')}}"> <strong>The Project</strong></a>
+                        </li>
+                        <li><a target='_blank' href="{{url_for('home.AboutDylana')}}"><strong>The
+                            Contributor</strong></a></li>
                     </ul>
                 </li>
 
             </ul>
 
 
-  </div>
         </div>
-        <!--导航-->
+    </div>
+    <!--导航-->
 
     </div>
 </nav>
@@ -90,16 +102,13 @@
     {% block content%} {% endblock%}
 </div>
 <!--内容-->
-<!--<script src="{{url_for('static',filename='base/js/jquery.min.js')}}"></script>-->
 <script src="{{url_for('static',filename='base/js/bootstrap.min.js')}}"></script>
 <script src="{{url_for('static',filename='base/js/jquery.singlePageNav.min.js')}}"></script>
 <script src="{{url_for('static',filename='base/js/wow.min.js')}}"></script>
 <script src="{{url_for('static',filename='lazyload/jquery.lazyload.min.js')}}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.js"></script>
-
 
 <script>
-    $(function() {
+    $(function () {
         new WOW().init();
     })
 

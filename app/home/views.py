@@ -259,15 +259,16 @@ def regist():
     return render_template("home/regist.html", form=form)
 
 
-# 会员修改资料
+# user edit theit profile
 @home.route("/user/", methods=["GET", "POST"])
+@user_login_req
 def user():
     form = UserdetailForm()
     print(session['user_id'])
     user = User.query.get(int(session['user_id']))
     form.face.validators = []
     if request.method == "GET":
-        # 赋初值
+        # give the first value
         #form.name.data = user.name
         form.email.data = user.email
         form.info.data = user.info
@@ -298,7 +299,7 @@ def user():
 @user_login_req
 def pwd():
     """
-    修改密码
+    change the password
     """
     form = PwdForm()
     if form.validate_on_submit():
@@ -337,7 +338,7 @@ def comments(page=None):
 @user_login_req
 def loginlog(page=None):
     """
-    会员登录日志
+    user log-in logs
     """
     if page is None:
         page = 1
@@ -377,7 +378,7 @@ def moviecol_add():
     return json.dumps(data)
 
 @home.route("/rating/add/", methods=["GET"])
-# @user_login_req
+@user_login_req
 def rating_add():
     """
     add the movie rating
@@ -410,7 +411,7 @@ def rating_add():
     return json.dumps(data)
 
 @home.route("/rating/find/", methods=["GET"])
-# @user_login_req
+@user_login_req
 def rating_find():
     """
     find  the movie rating
@@ -474,9 +475,7 @@ def search(page=None):
 @home.route("/AboutDylana", methods=["GET"])
 def AboutDylana():
     return render_template("home/AboutDylana.html")
+
 @home.route("/AboutProject", methods=["GET"])
 def AboutProject():
     return render_template("home/AboutProject.html")
-@home.route("/dylanawang", methods=["GET"])
-def dylanawang():
-    return render_template("home/dylanawang.html")

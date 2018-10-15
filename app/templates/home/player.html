@@ -2,19 +2,11 @@
 {% import "ui/comment_page.html" as pg %}
 
 {% block css %}
-<!--播放页面-->
+<!--播放页面
 <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='jwplayer/skins/stormtrooper.css') }}">
 <script type="text/javascript" src="{{ url_for('static',filename='ueditor/ueditor.config.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static',filename='ueditor/ueditor.all.js') }}"></script>
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.js"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/semantic.min.css" type="text/css"
-          rel="stylesheet"/>
-<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='mood/range.css')}}">
-<script type="text/javascript"  src="{{ url_for('static',filename='mood/range.js')}}"></script>
-
-
+-->
 <!--播放页面-->
 <style>
     .col-lg-1, .col-lg-10, .col-lg-11, .col-lg-12, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-md-1, .col-md-10, .col-md-11, .col-md-12, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-sm-1, .col-sm-10, .col-sm-11, .col-sm-12, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-xs-1, .col-xs-10, .col-xs-11, .col-xs-12, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9 {
@@ -28,71 +20,77 @@
 
 {% block content %}
 <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-8" style="height:470px">
         <div id="player"></div>
     </div>
-    <div class="col-md-4" style="height:440px;margin-top:0px;margin-left:-20px;" >
+    <div class="col-md-4" style="height:470px">
         <div class="panel panel-default" style="background-color:#4d4d4d !important;">
             <div class="panel-heading" style="background-color:#4d4d4d !important;">
-                <h3 id="movie_name" class="panel-title" style="color:white;font-weight:bold;font-style:italic;" ><span class="glyphicon glyphicon-facetime-video"></span></h3>
+                <h3 id="movie_name" class="panel-title" style="color:white;font-weight:bold;font-style:italic;"><span
+                        class="glyphicon glyphicon-facetime-video"></span></h3>
             </div>
-            <div class="panel-body" style="height:450px;overflow:scroll;">
+            <div class="panel-body" style="height:470px;overflow:scroll;">
                 {% if "user" not in session %}
                 <div id="rateYo_no"></div>
                 <div style="margin-top:-20px;margin-left: 120px">
-                    <button  style="font-weight:200;color:#b2182b;font-weight:bold;font-style:italic;">
-                        <a href="{{ url_for('home.login') }}" target="_blank" style="color:#b2182b" class="text-info"><U>Log In</U></a> To Rate</button>
+                    <button style="font-weight:200;color:#b2182b;font-weight:bold;font-style:italic;">
+                        <a href="{{ url_for('home.login') }}" target="_blank" style="color:#b2182b"
+                           class="text-info"><U>Log In</U></a> To Rate
+                    </button>
                 </div>
                 {%endif%}
                 {% if "user" in session %}
                 <div id="rateYo_yes"></div>
                 <div style="margin-top:-20px;margin-left: 120px">
-                    <button id="rating_submit" style="font-weight:200;font-weight:bold;font-style:italic;">Rate this</button>
+                    <button id="rating_submit" style="font-weight:200;font-weight:bold;font-style:italic;">Rate this
+                    </button>
                 </div>
                 <p style="color:#ffffff;font-weight:bold;font-style:italic;" id="show_rating_msg_yes"></p>
                 <script>
                     var mid = {{movie.id}};
                     var uid = {{session['user_id']}};
+                    console.log(mid);
+                    console.log(uid);
                     $.ajax({
                         url: "{{ url_for('home.rating_find') }}",
                         type: "GET",
                         data: "mid=" + mid + "&uid=" + uid,
                         dataType: "json",
                         success: function (res) {
-                            var init_rating=res.rating_value
+                            var init_rating = res.rating_value
                             $("#rateYo_yes").rateYo("option", "rating", init_rating)
                         }
-                            });
-                    var $rateYo=$("#rateYo_yes").rateYo({
-                    starWidth: "20px",
-                    multiColor: {
-                        "startColor": "#d23629", //RED
-                        "endColor": "#0be246" //GREEN
-                    },
-                    halfStar: true,
-                    onChange: function (rating, rateYoInstance) {
-                    },
-                });
-
-                $("#rating_submit").click(function () {
-                    var mid = {{movie.id}};
-                    var uid = {{session['user_id']}};
-                    var rating = $rateYo.rateYo("rating");
-                    $.ajax({
-                        url: "{{ url_for('home.rating_add') }}",
-                        type: "GET",
-                        data: "mid=" + mid + "&uid=" + uid + "&value=" + rating,
-                        dataType: "json",
-                        success: function (res) {
-                            $('#show_rating_msg_yes').text(res.ok).fadeIn(600).delay(600).fadeOut(600);
-                        }
-                            });
-
+                    });
+                    var $rateYo = $("#rateYo_yes").rateYo({
+                        starWidth: "20px",
+                        multiColor: {
+                            "startColor": "#d23629", //RED
+                            "endColor": "#0be246" //GREEN
+                        },
+                        halfStar: true,
+                        onChange: function (rating, rateYoInstance) {
+                        },
                     });
 
+                    $("#rating_submit").click(function () {
+                        var mid = {{movie.id}};
+                        var uid = {{session['user_id']}};
+                        var rating = $rateYo.rateYo("rating");
+                        console.log(rating);
+                        $.ajax({
+                            url: "{{ url_for('home.rating_add') }}",
+                            type: "GET",
+                            data: "mid=" + mid + "&uid=" + uid + "&value=" + rating,
+                            dataType: "json",
+                            success: function (res) {
+                                $('#show_rating_msg_yes').text(res.ok).fadeIn(600).delay(600).fadeOut(600);
+                            }
+                        });
 
+                    });
                 </script>
                 {%endif%}
+
                 <table class="table">
                     <tr>
                         <td style="color:white;font-weight:bold;font-style:italic;width:30%">
@@ -150,12 +148,14 @@
     <div class="col-md-12" style="margin-top:6px;">
         <div class="panel panel-default">
             <div class="panel-heading" style="background-color:#4d4d4d !important;">
-                {%if user in session%}
-                <h3 class="panel-title" style="color:white;font-weight:bold;font-style:italic;"><span class="glyphicon glyphicon-comment"></span>&nbsp;Customed Recommendations For You
+                {%if "user" in session%}
+                <h3 class="panel-title" style="color:white;font-weight:bold;font-style:italic;"><span
+                        class="glyphicon glyphicon-comment"></span>&nbsp;Customed Recommendations For You
                 </h3>
                 {%endif%}
-                {%if user not in session%}
-                <h3 class="panel-title" style="color:white;font-weight:bold;font-style:italic;"><span class="glyphicon glyphicon-comment"></span>&nbsp;Genome Recommendations For You
+                {%if "user" not in session%}
+                <h3 class="panel-title" style="color:white;font-weight:bold;font-style:italic;"><span
+                        class="glyphicon glyphicon-comment"></span>&nbsp;Genome Recommendations For You
                 </h3>
                 {%endif%}
             </div>
@@ -163,10 +163,12 @@
                 <span style="width:100px;margin-left:200px;margin-top:10px;color:#ccc;">Weak</span>
                 <span style="width:100px;margin-left:500px;margin-top:10px;color:#ccc;">Strong</span>
                 {% if "user" not in session %}
-                <div class="ui inverted grey range" id="recommend_slider" style="width:400px;margin-left:300px;margin-top:-20px;"></div>
+                <div class="ui inverted grey range" id="recommend_slider"
+                     style="width:400px;margin-left:300px;margin-top:-20px;"></div>
                 {%endif%}
-                {% if "user"  in session %}
-                <div class="ui inverted grey range" id="recommend_slider_yes" style="width:400px;margin-left:300px;margin-top:-20px;"></div>
+                {% if "user" in session %}
+                <div class="ui inverted grey range" id="recommend_slider_yes"
+                     style="width:400px;margin-left:300px;margin-top:-20px;"></div>
                 <script>
                     function change_recommend_movie_yes(RangeValue, movie_name) {
                         var uid = {{session['user_id']}};
@@ -186,8 +188,6 @@
 
                             }
                         });
-
-
                     };</script>
                 {%endif%}
                 <div class="panel-movie" id="recommend_movies" style="float:left;margin-top:20px;"></div>
@@ -195,9 +195,10 @@
         </div>
     </div>
     <div class="col-md-12" style="margin-top:6px;">
-        <div class="panel panel-default"  tyle="background-color:#4d4d4d !important;">
-            <div class="panel-heading" style="background-color:#4d4d4d !important;" >
-                <h3 class="panel-title" style="color:white;font-weight:bold;font-style:italic;"><span class="glyphicon glyphicon-comment"></span>&nbsp;Reviews</h3>
+        <div class="panel panel-default" tyle="background-color:#4d4d4d !important;">
+            <div class="panel-heading" style="background-color:#4d4d4d !important;">
+                <h3 class="panel-title" style="color:white;font-weight:bold;font-style:italic;"><span
+                        class="glyphicon glyphicon-comment"></span>&nbsp;Reviews</h3>
             </div>
             <div class="panel-body">
                 {% if "user" not in session %}
@@ -207,7 +208,7 @@
                         <span class="sr-only">Close</span>
                     </button>
                     <strong><a href="{{ url_for('home.login') }}" target="_blank"
-                                 class="text-info" style="color:#b2182b"><U>  Log In </U></a> To Write A Review！</strong>
+                               class="text-info" style="color:#b2182b"><U> Log In </U></a> To Write A Review！</strong>
                 </div>
                 {% endif %}
                 <ol class="breadcrumb" style="margin-top:6px;">
@@ -287,50 +288,50 @@
         multiColor: {
             "startColor": "#d23629", //RED
             "endColor": "#0be246" //GREEN
-             },
-            rating: 0,
-            readOnly: true,
-            halfStar: true,
-        });
-        $("#show_rating_msg_no").empty();
-        $("#show_rating_msg_no").append("Log In For Rating");
+        },
+        rating: 0,
+        readOnly: true,
+        halfStar: true,
+    });
+    $("#show_rating_msg_no").empty();
+    $("#show_rating_msg_no").append("Log In For Rating");
 
     //customed recommendation if users has logged in
-$('#recommend_slider_yes').range({
+    $('#recommend_slider_yes').range({
         min: 0,
         max: 0.5,
         start: 0.05,
-        step:0.05,
+        step: 0.05,
         onChange: function (val) {
             RangeValue = val;
             change_recommend_movie_yes(RangeValue, '{{movie.title_without_year}}')
         }
-            });
+    });
 
 
-
-$('#recommend_slider').range({
+    $('#recommend_slider').range({
         min: 0,
         max: 0.5,
         start: 0.05,
-        step:0.05,
+        step: 0.05,
         onChange: function (val) {
             RangeValue = val;
             change_recommend_movie(RangeValue, '{{movie.title_without_year}}')
         }
-            });
-function change_recommend_movie(RangeValue,movie_name) {
+    });
+
+    function change_recommend_movie(RangeValue, movie_name) {
         $.ajax({
             type: 'GET',
             url: '/change_recommend_movie',
-            data: {"range_value":RangeValue , "title": movie_name},
+            data: {"range_value": RangeValue, "title": movie_name},
             dataType: 'json',
             success: function (data) {
                 $("#recommend_movies").empty();
                 recommend_title_list = data.recMovieTitle;
-                recommend_id_list=data.recMovieId;
+                recommend_id_list = data.recMovieId;
                 for (j = 0; j < recommend_title_list.length; j++) {
-                    extract(recommend_title_list[j],recommend_id_list[j]);
+                    extract(recommend_title_list[j], recommend_id_list[j]);
 
                 }
 
@@ -340,20 +341,20 @@ function change_recommend_movie(RangeValue,movie_name) {
 
     }
 
-    function extract(title,id){
+    function extract(title, id) {
         omdb_url = "http://www.omdbapi.com/?i=tt3896198&apikey=ecdad4ed&t=";
-    $.ajax({
-             type: 'GET',
-             url: omdb_url + title,
-             dataType: 'json',
+        $.ajax({
+            type: 'GET',
+            url: omdb_url + title,
+            dataType: 'json',
 
-             success: function (data) {
-                 $('#recommend_movies').append(recommendMovieDataTpl(data,id));
-             }
-         })
-     };
-recommendMovieDataTpl = (movie,id) =>
-    {return `<div  class="movie__poster--featured" style="width:140px;height: 200px;float:left">
+            success: function (data) {
+                $('#recommend_movies').append(recommendMovieDataTpl(data, id));
+            }
+        })
+    };
+    recommendMovieDataTpl = (movie, id) =>{
+        return `<div  class="movie__poster--featured" style="width:140px;height: 200px;float:left">
 <img src="${movie.Poster}" style="width: 140px;
   height: 200px; margin-left:20px" onclick="window.location='/player/${id}/1/'"/>
   </div>
@@ -365,27 +366,28 @@ recommendMovieDataTpl = (movie,id) =>
 <script>
 
     function get_movie_info(title) {
-     const defaultTitle = 'dead+poets+society';
-     omdb_url = "http://www.omdbapi.com/?i=tt3896198&apikey=ecdad4ed&t="
-     var recommend_list;
-     $.ajax({
-         type: 'GET',
-         url: omdb_url + title.replace(/ /gi, '+'),
-         dataType: 'json',
-         success: function (data) {
-             $('#movie_name').text(data.Title+' ('+data.Released.slice(-4)+')');
-             $('#movie_Director').text(data.Director)
-             $('#movie_Writer').text(data.Writer)
-             $('#movie_Actors').text(data.Actors)
-             $('#movie_Genre').text(data.Genre)
-             $('#movie_plot').text(data.Plot)
-             $('#movie_Rated').text(data.Rated)
-             $('#rating').text(data.Ratings[0].Value+data.Ratings[1].Value+data.Ratings[2].Value)
+        const defaultTitle = 'dead+poets+society';
+        omdb_url = "http://www.omdbapi.com/?i=tt3896198&apikey=ecdad4ed&t="
+        var recommend_list;
+        $.ajax({
+            type: 'GET',
+            url: omdb_url + title.replace(/ /gi, '+'),
+            dataType: 'json',
+            success: function (data) {
+                $('#movie_name').text(data.Title + ' (' + data.Released.slice(-4) + ')');
+                $('#movie_Director').text(data.Director)
+                $('#movie_Writer').text(data.Writer)
+                $('#movie_Actors').text(data.Actors)
+                $('#movie_Genre').text(data.Genre)
+                $('#movie_plot').text(data.Plot)
+                $('#movie_Rated').text(data.Rated)
+                $('#rating').text(data.Ratings[0].Value + data.Ratings[1].Value + data.Ratings[2].Value)
 
-         }
-     })
- }
-     get_movie_info('{{movie.title_without_year}}');
+            }
+        })
+    }
+
+    get_movie_info('{{movie.title_without_year}}');
 
 </script>
 <!--播放页面-->
@@ -403,9 +405,9 @@ recommendMovieDataTpl = (movie,id) =>
 
     function onYouTubeIframeAPIReady() {
         player = new YT.Player('player', {
-            height: '450',
-            width: '760',
             videoId: '{{movie.youtubeId}}',
+            height: "100%",
+            width: "100%",
             events: {
                 'onReady': onPlayerReady,
                 //'onStateChange': onPlayerStateChange
