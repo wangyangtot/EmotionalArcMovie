@@ -22,6 +22,7 @@ The additional required Python packages are listed in the file requirements.txt.
 ```pip install -r requirements.txt```
 
 # Usage and data pipeline
+##Download the data source
 The scripts are obtained by scraping 1100 movies from website [IMSDb](https://www.imsdb.com/) and 23576 from [springfieledspringfiled](https://www.springfieldspringfield.co.uk/). You can automatically download  them by running the code in src/imsdb_scraping .ipynb and src/scraping_springField_movieScripts.ipynb.
 
 ```
@@ -34,11 +35,20 @@ Above code will creates a directory data/imsdb_scraping,and springField_scraping
 
 The movie meta-information like youtubeId,genome vectors,movieID,could be downloaded the latest version of dataset from the [movieLens](https://grouplens.org/datasets/movielens/).
 
-# Process the data cleaning
-Like the way to run imsdb_scraping.ipynb scipts,consecutively run the 
+## Process the data cleaning
+Like the way to run imsdb_scraping.ipynb scipts,consecutively run  
 ```combine_movielens_scripts.ipynb
 write_genome_df.ipynb
 write_movie_with_youtubeId.ipynb
 rating_with_imdbId.ipynb
 ```
+## Extract the emotional arcs
+This is done by looking up each word of a given window in the [NRC Word-Emotion Association Lexicon](http://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm), which associates words 2 sentiments (negative, positive). The code that extract the emotional content, smooth the arc trajectory and subsample 100 points of each movie and is in src/R_sentiment.r. It can be run in R interactive shell by command:
+```Rscript R_sentiment.r.```
+
+The code creates a directory "../data/normed_sentiment/, where it stores the datapoints needed to trace the trajectory for each movie.
+
+## K-means cluster
+
+
 
