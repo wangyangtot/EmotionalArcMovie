@@ -9,6 +9,8 @@ Motived by the research paper[ The emotional arcs of stories are dominated by si
  
  The example of an interactive main interface of engine as below:
 
+[![Watch the video](https://raw.github.com/GabLeRoux/WebMole/master/ressources/WebMole_Youtube_Video.png)](https://youtu.be/AeYTEjcYPZs)
+
 The detailed project introduction is https://annavm.github.io/Project_Plotline/example/:
 
 # Requirements and installation
