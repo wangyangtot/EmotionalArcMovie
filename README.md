@@ -9,7 +9,7 @@ Motived by the research paper[ The emotional arcs of stories are dominated by si
  
  The example of an interactive main interface of engine as below:
 
-[![Watch the video]](https://youtu.be/AeYTEjcYPZs)
+[![Watch the video](https://github.com/wangyangtot/EmotionalArcMovie/blob/master/app/static/pig/EmotionalArcMovie.png)](https://youtu.be/AeYTEjcYPZs)
 
 The detailed project introduction is https://annavm.github.io/Project_Plotline/example/:
 
@@ -35,7 +35,7 @@ jupyter notebook
 and then run imsdb_scraping.ipynb and scraping_springField_movieScripts.ipynb.
 Above code will creates a directory data/imsdb_scraping,and springField_scraping where they stores the movie scripts, along with some meta-information.
 
-The movie meta-information like youtubeId,genome vectors,movieID,could be downloaded the latest version of dataset from the [movieLens(https://github.com/wangyangtot/EmotionalArcMovie/blob/master/app/static/pig/EmotionalArcMovie.png)](https://grouplens.org/datasets/movielens/).
+The movie meta-information like youtubeId,genome vectors,movieID,could be downloaded the latest version of dataset from the [movieLens](https://grouplens.org/datasets/movielens/).
 
 ## Process the data cleaning
 Like the way to run imsdb_scraping.ipynb scipts,consecutively run  
