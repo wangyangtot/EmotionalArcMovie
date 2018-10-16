@@ -24,9 +24,10 @@ The additional required Python packages are listed in the file requirements.txt.
 # Usage and data pipeline
 The scripts are obtained by scraping 1100 movies from website [IMSDb](https://www.imsdb.com/) and 23576 from [springfieledspringfiled](https://www.springfieldspringfield.co.uk/). You can automatically download  them by running the code in src/imsdb_scraping .ipynb and src/scraping_springField_movieScripts.ipynb.
 
-```cd src/
-
-jupyter notebook```
+```
+cd src/
+jupyter notebook
+```
 
 run imsdb_scraping .ipynb and scraping_springField_movieScripts.ipynb.
 Above code will creates a directory data/imsdb_scraping,and springField_scraping where they stores the movie scripts, along with some metainformation.
