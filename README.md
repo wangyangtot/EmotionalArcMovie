@@ -85,6 +85,6 @@ This  is a a hybrid recommender system which integrates content and sentiment-ba
         of
         movies.
         
-        To see more details about the project or to try the  web app,the link is(http://127.0.0.1:5000/EmotionalArcMovie) .
+To see more details about the project or to try the  web app,the link is(http://127.0.0.1:5000/EmotionalArcMovie) .
 
 
