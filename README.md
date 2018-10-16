@@ -4,7 +4,7 @@ EmotionalArcMovie is an interactive recommender system  that supports discovery 
                     with the desired
                     sentiment arc to go beyond the static ranked list paradigm.
                     
-Motived by the research paper[The emotional arcs of stories are dominated by six basic shapes](https://arxiv.org/abs/1606.07772)
+Motived by the research paper[ The emotional arcs of stories are dominated by six basic shapes ](https://arxiv.org/abs/1606.07772)
  that used the NLP methodology to map emotional journeys of novel collections and identified 6 emotional arcs which describe all those stories,I decided to analized 9000 movie scripts and build a movie recommendation system engine.
  
  The example of an interactive main interface of engine as below:
@@ -25,6 +25,7 @@ The additional required Python packages are listed in the file requirements.txt.
 The scripts are obtained by scraping 1100 movies from website [IMSDb](https://www.imsdb.com/) and 23576 from [springfieledspringfiled](https://www.springfieldspringfield.co.uk/). You can automatically download  them by running the code in src/imsdb_scraping .ipynb and src/scraping_springField_movieScripts.ipynb.
 
 ```cd src/
+
 jupyter notebook```
 
 run imsdb_scraping .ipynb and scraping_springField_movieScripts.ipynb.
