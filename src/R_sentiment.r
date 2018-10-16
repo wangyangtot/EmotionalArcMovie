@@ -7,6 +7,7 @@
 #3) the resulting trajectory was uniformly sub-sampled to have 100 points so that each script sentiment arc could be represented using the scrpts timing from 0% (beginning of the movie) to 100% (end of the movie).
 #4) save the every selected movie's 100-dimentional vectors  to '../data/normed_sentiment/'
 #------------------------
+library(syuzhet)
 path_to_load<-"../data/select_texts/"
 path_to_save<-"../data/normed_sentiment/"
 file_names=list.files(path = path_to_load,recursive = TRUE)
