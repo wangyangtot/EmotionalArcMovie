@@ -4,7 +4,7 @@ EmotionalArcMovie is an interactive recommender system  that supports discovery 
                     with the desired
                     sentiment arc to go beyond the static ranked list paradigm.
                     
-Motived by the research paper[GitHub Pages]("https://arxiv.org/abs/1606.07772")
+Motived by the research paper [GitHub Pages]("https://arxiv.org/abs/1606.07772")
  that used the NLP methodology to map emotional journeys of novel collections and identified 6 emotional arcs which describe all those stories,I decided to analized 9000 movie scripts and build a movie recommendations system engine.
  
  The example of an interactive main interface of engine as below:
