@@ -66,8 +66,13 @@ gcc calculate_sentiment_similarities.cpp -o calculate_genome_similarities.out
 ./calculate_sentiment_similarities.out
 
 ```
+
 ## matrix factorization Collaborative Filtering
-To build a recommend system for registered usrs,I applied the matrix factorization algorithm by using the ratings from Movielens. I used [turi create](https://github.com/apple/turicreate) to train the model  and save in the dirtory "..data/tc_matrix_factorization_model'
+To build a recommend system for registered usrs,I applied the matrix factorization algorithm by using the ratings from Movielens. I used [turi create](https://github.com/apple/turicreate) to train the model  and save in the dirtory "..data/tc_matrix_factorization_model'.the code is 
+
+```
+turi_matrix_factorization.ipynb
+```
 
 # Develop a web app as recommendion system
 
@@ -78,6 +83,8 @@ This  is a a hybrid recommender system which integrates content and sentiment-ba
         give
         the user right to choose movies with centain type of emotional arc and adjust the influence of the emotional arc
         of
-        movies.To see more details about the project or to try the  web app,the link is(http://127.0.0.1:5000/EmotionalArcMovie) .
+        movies.
+        
+        To see more details about the project or to try the  web app,the link is(http://127.0.0.1:5000/EmotionalArcMovie) .
 
 
