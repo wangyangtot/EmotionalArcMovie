@@ -36,4 +36,9 @@ The movie meta-information like youtubeId,genome vectors,movieID,could be downlo
 
 # Process the data cleaning
 Like the way to run imsdb_scraping.ipynb scipts,consecutively run the 
+```combine_movielens_scripts.ipynb
+write_genome_df.ipynb
+write_movie_with_youtubeId.ipynb
+rating_with_imdbId.ipynb
+```
 
