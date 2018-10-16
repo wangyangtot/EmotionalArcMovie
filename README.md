@@ -13,10 +13,10 @@ The detailed project introduction is https://annavm.github.io/Project_Plotline/e
 
 # Requirements and installation
 It is recommended to use the Anaconda distribution, to install a set of standard required packages. Once Anaconda is installed, please type:
-'''conda install numpy pandas matplotlib'''
+```conda install numpy pandas matplotlib```
 
 The additional required Python packages are listed in the file requirements.txt. In order to install them, please type:
 
-'''pip install -r requirements.txt'''
+```pip install -r requirements.txt```
 
 
