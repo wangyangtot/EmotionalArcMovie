@@ -11,7 +11,7 @@ Motived by the research paper[ The emotional arcs of stories are dominated by si
 
 [![Watch the video](https://github.com/wangyangtot/EmotionalArcMovie/blob/master/app/static/pig/EmotionalArcMovie.png)](https://youtu.be/AeYTEjcYPZs)
 
-The detailed project introduction is https://annavm.github.io/Project_Plotline/example/:
+The detailed project introduction is https://emotionalarcmovie.herokuapp.com/EmotionalArcMovie:
 
 # Requirements and installation
 
@@ -24,7 +24,7 @@ The additional required Python packages are listed in the file requirements.txt.
 ```pip install -r requirements.txt```
 
 # Usage and data pipeline
-##Download the data source
+## Download the data source
 The scripts are obtained by scraping 1100 movies from website [IMSDb](https://www.imsdb.com/) and 23576 from [springfieledspringfiled](https://www.springfieldspringfield.co.uk/). You can automatically download  them by running the code in src/imsdb_scraping .ipynb and src/scraping_springField_movieScripts.ipynb.
 
 ```
@@ -33,9 +33,9 @@ jupyter notebook
 ```
 
 and then run imsdb_scraping.ipynb and scraping_springField_movieScripts.ipynb.
-Above code will creates a directory data/imsdb_scraping,and springField_scraping where they stores the movie scripts, along with some meta-information.
+Above code will creates a directory 'data/imsdb_scraping' and 'data/springField_scraping' where they stores the movie scripts, along with some meta-information.
 
-The movie meta-information like youtubeId,genome vectors,movieID,could be downloaded the latest version of dataset from the [movieLens](https://grouplens.org/datasets/movielens/).
+The movie meta-information like youtubeId,genome vectors,movieID,could be downloaded from the [movieLens](https://grouplens.org/datasets/movielens/).
 
 ## Process the data cleaning
 Like the way to run imsdb_scraping.ipynb scipts,consecutively run  
