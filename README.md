@@ -57,7 +57,7 @@ it will use all the 100-dimentional vectors of everymovie to fit  in 6 clusters,
 ```k_means.ipynb```
 
 ## calculate the simlarities between each pair of movies concerning the genome and emotional arc
-After having the 100-dimentional arcs and the  genome vector of every movie,we calculated the sentiment arc simmilarities ans genome similarities betwen each pair of  movies.this is done by c++ scipts calculate_genome_similarities.cpp and calculate_sentiment_similarities.cpp since wi will take more than one day but only 4 minutes in c++.
+After having the 100-dimentional arcs and the  genome vector of every movie,we calculated the sentiment arc simmilarities ans genome similarities betwen each pair of  movies.this is done by c++ scipts calculate_genome_similarities.cpp and calculate_sentiment_similarities.cpp since wi will take more than one day by python scripts but only 4 minutes in c++.
 
 open the terminal and type in
 
