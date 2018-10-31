@@ -10,4 +10,4 @@ flask_sqlalchemy==2.3.2
 flask_wtf==0.14.2
 Werkzeug==0.14.1
 WTForms==2.2.1
-gunicorn==19.4.5
+gunicorn==19.5.0
